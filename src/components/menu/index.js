@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Menu() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -179,7 +179,7 @@ export default function Menu() {
             <ListItemIcon>
               <InboxIcon />
               <Link to="/general-user" className={classes.itemLink}>
-                {"usuario General"}
+                {"Agente de cobro"}
               </Link>
             </ListItemIcon>
           </ListItem>
@@ -187,7 +187,7 @@ export default function Menu() {
             <ListItemIcon>
               <InboxIcon />
               <Link to="/general-user" className={classes.itemLink}>
-                {"usuario General"}
+                {"Admin"}
               </Link>
             </ListItemIcon>
           </ListItem>

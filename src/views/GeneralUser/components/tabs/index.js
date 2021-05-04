@@ -8,6 +8,8 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Pasarela from "./components/Pasarela";
 import MisPagos from "./components/MisPagos";
+import MisSuscripciones from "./components/MisSuscripciones";
+import MisRecibos from "./components/MisRecibos";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -69,29 +71,29 @@ export default function ScrollableTabsButtonAuto() {
           aria-label="scrollable auto tabs example"
           centered
         >
-          <Tab label="Realizar pago" {...a11yProps(0)} />
-          <Tab label="Mis Pagos " {...a11yProps(1)} />
+          <Tab label="Mis Pagos " {...a11yProps(0)} />
           <Tab label="Mis suscripciones" {...a11yProps(2)} />
           <Tab label="Mis Recibos " {...a11yProps(3)} />
         </Tabs>
       </AppBar>
+
       <TabPanel value={value} index={0}>
         <Typography variant="h3" component="h5">
-          Realizar pago
+          Mis Pagos
+          <MisPagos></MisPagos>
         </Typography>
-        <Pasarela></Pasarela>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Typography variant="h3" component="h5">
-          Mis Pagos
+          Mis suscripciones
+          <MisSuscripciones></MisSuscripciones>
         </Typography>
-        <MisPagos></MisPagos>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Mis suscripciones
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        Mis Recibos
+        <Typography variant="h3" component="h5">
+          Mis Recibos
+          <MisRecibos></MisRecibos>
+        </Typography>
       </TabPanel>
     </div>
   );
