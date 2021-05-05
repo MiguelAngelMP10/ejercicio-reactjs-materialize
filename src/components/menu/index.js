@@ -180,10 +180,10 @@ export default function Menu() {
               </Link>
             </ListItemIcon>
           </ListItem>
-          <ListItem button key={"general-user"}>
+          <ListItem button key={"admin"}>
             <ListItemIcon>
               <InboxIcon />
-              <Link to="/general-user" className={classes.itemLink}>
+              <Link to="/admin" className={classes.itemLink}>
                 {"Admin"}
               </Link>
             </ListItemIcon>

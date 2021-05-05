@@ -5,6 +5,7 @@ import Login from "../views/Login";
 import Menu from "../components/menu";
 import GeneralUser from "../views/GeneralUser";
 import CollectionAgent from "../views/CollectionAgent";
+import Admin from "../views/Admin";
 
 export default function Routes() {
   return (
@@ -22,6 +23,9 @@ export default function Routes() {
         </Route>
         <Route path="/collection-agent" exact>
           <CollectionAgent></CollectionAgent>
+        </Route>
+        <Route path="/admin" exact>
+          <Admin></Admin>
         </Route>
         <Route>
           <FourOFour></FourOFour>
