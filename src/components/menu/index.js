@@ -172,10 +172,10 @@ export default function Menu() {
               </Link>
             </ListItemIcon>
           </ListItem>
-          <ListItem button key={"general-user"}>
+          <ListItem button key={"collection-agent"}>
             <ListItemIcon>
               <InboxIcon />
-              <Link to="/general-user" className={classes.itemLink}>
+              <Link to="/collection-agent" className={classes.itemLink}>
                 {"Agente de cobro"}
               </Link>
             </ListItemIcon>
