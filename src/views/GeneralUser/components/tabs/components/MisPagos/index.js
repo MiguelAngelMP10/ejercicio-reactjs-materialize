@@ -13,11 +13,9 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  GridCellParams,
   InputLabel,
   MenuItem,
   Select,
-  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Pasarela from "../Pasarela";

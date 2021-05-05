@@ -1,7 +1,6 @@
 import * as React from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import { Button } from "@material-ui/core";
-import PaymentIcon from "@material-ui/icons/Payment";
 import PrintIcon from "@material-ui/icons/Print";
 const columns = [
   { field: "id", headerName: "ID", width: 70 },
