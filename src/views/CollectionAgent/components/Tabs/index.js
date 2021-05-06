@@ -13,6 +13,7 @@ import ConceptosPago from "../ConceptosPago";
 import ConceptosPlanes from "../ConceptosPlanes";
 import Penalizacion from "../Penalizaciones";
 import AbrobacionPagos from "../AprobacionPagos";
+import CancelarPagos from "../CancelarPagos";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -132,6 +133,7 @@ export default function ScrollableTabsButtonAuto() {
         <Typography variant="h3" component="h5">
           Cancelar pagos
         </Typography>
+        <CancelarPagos></CancelarPagos>
       </TabPanel>
     </div>
   );
