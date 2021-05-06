@@ -11,6 +11,7 @@ import Usuarios from "../Usuarios";
 import AsignarCobros from "../AsignarCobros";
 import ConceptosPago from "../ConceptosPago";
 import ConceptosPlanes from "../ConceptosPlanes";
+import Penalizacion from "../Penalizaciones";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -118,6 +119,7 @@ export default function ScrollableTabsButtonAuto() {
         <Typography variant="h3" component="h5">
           Definición penalizaciones
         </Typography>
+        <Penalizacion></Penalizacion>
       </TabPanel>
       <TabPanel value={value} index={6}>
         <Typography variant="h3" component="h5">
