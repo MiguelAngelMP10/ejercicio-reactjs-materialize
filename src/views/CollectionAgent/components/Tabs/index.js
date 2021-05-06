@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Pagos from "../Pagos";
 import Usuarios from "../Usuarios";
+import AsignarCobros from "../AsignarCobros";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -96,6 +97,7 @@ export default function ScrollableTabsButtonAuto() {
       <TabPanel value={value} index={2}>
         <Typography variant="h3" component="h5">
           Asignar cobros
+          <AsignarCobros></AsignarCobros>
         </Typography>
       </TabPanel>
       <TabPanel value={value} index={3}>
