@@ -10,6 +10,7 @@ import Pagos from "../Pagos";
 import Usuarios from "../Usuarios";
 import AsignarCobros from "../AsignarCobros";
 import ConceptosPago from "../ConceptosPago";
+import ConceptosPlanes from "../ConceptosPlanes";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -111,6 +112,7 @@ export default function ScrollableTabsButtonAuto() {
         <Typography variant="h3" component="h5">
           Conceptos de planes
         </Typography>
+        <ConceptosPlanes></ConceptosPlanes>
       </TabPanel>
       <TabPanel value={value} index={5}>
         <Typography variant="h3" component="h5">
