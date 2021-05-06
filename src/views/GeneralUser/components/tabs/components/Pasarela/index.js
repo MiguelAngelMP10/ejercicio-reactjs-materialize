@@ -31,7 +31,7 @@ export default function Pasarela() {
           </Typography>
           <CardMedia
             className={classes.media}
-            image="https://cysae.com/wp-content/uploads/2019/04/Sin-t%C3%ADtulo.png"
+            image="https://public.openpay.mx/images/ejemplo_cobro_tarjeta4.png"
             title="Contemplative Reptile"
           />
         </CardContent>
