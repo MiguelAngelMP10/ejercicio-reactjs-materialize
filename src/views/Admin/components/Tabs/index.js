@@ -7,6 +7,7 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import RegistarAgente from "../RegistrarAgente";
+import RegistrarPasarelaPago from "../RegistrarPasarelaPago";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -87,6 +88,7 @@ export default function ScrollableTabsButtonAuto() {
         <Typography variant="h3" component="h5">
           Registrar pasarelas de pago
         </Typography>
+        <RegistrarPasarelaPago></RegistrarPasarelaPago>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Typography variant="h3" component="h5">
