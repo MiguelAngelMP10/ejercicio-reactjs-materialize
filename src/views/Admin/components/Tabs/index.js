@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import RegistarAgente from "../RegistrarAgente";
 import RegistrarPasarelaPago from "../RegistrarPasarelaPago";
+import ColoresSistema from "../ColoresSistema";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -69,7 +70,6 @@ export default function ScrollableTabsButtonAuto() {
           indicatorColor="primary"
           textColor="primary"
           aria-label="scrollable auto tabs example"
-          centered
         >
           <Tab label="Registrar agentes " {...a11yProps(0)} />
           <Tab label="Registrar pasarelas de pago " {...a11yProps(1)} />
@@ -94,6 +94,7 @@ export default function ScrollableTabsButtonAuto() {
         <Typography variant="h3" component="h5">
           Definir colores del sistema
         </Typography>
+        <ColoresSistema></ColoresSistema>
       </TabPanel>
       <TabPanel value={value} index={3}>
         <Typography variant="h3" component="h5">
