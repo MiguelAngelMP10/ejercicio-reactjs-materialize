@@ -9,6 +9,7 @@ import Box from "@material-ui/core/Box";
 import RegistarAgente from "../RegistrarAgente";
 import RegistrarPasarelaPago from "../RegistrarPasarelaPago";
 import ColoresSistema from "../ColoresSistema";
+import AcercaDeYNosotros from "../AcercaDeYNosotros";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -100,6 +101,7 @@ export default function ScrollableTabsButtonAuto() {
         <Typography variant="h3" component="h5">
           Configurar Acerca de y Nosotros
         </Typography>
+        <AcercaDeYNosotros></AcercaDeYNosotros>
       </TabPanel>
     </div>
   );
