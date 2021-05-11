@@ -1,4 +1,5 @@
-import React from "react";
+import { useContext, useState } from "react";
+
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -15,6 +16,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import { Link } from "react-router-dom";
+import SistemaContext from "../../context/sistema";
 
 const drawerWidth = 240;
 
@@ -88,7 +90,9 @@ const useStyles = makeStyles((theme) => ({
 export default function Menu() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+
+  const { login } = useContext(SistemaContext);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -146,7 +150,6 @@ export default function Menu() {
             )}
           </IconButton>
         </div>
-
         <List>
           <ListItem button key={"Login"}>
             <ListItemIcon>
@@ -156,38 +159,44 @@ export default function Menu() {
               </Link>
             </ListItemIcon>
           </ListItem>
-          <ListItem button key={"home"}>
-            <ListItemIcon>
-              <InboxIcon />
-              <Link to="/" className={classes.itemLink}>
-                {"home"}
-              </Link>
-            </ListItemIcon>
-          </ListItem>
-          <ListItem button key={"general-user"}>
-            <ListItemIcon>
-              <InboxIcon />
-              <Link to="/general-user" className={classes.itemLink}>
-                {"usuario General"}
-              </Link>
-            </ListItemIcon>
-          </ListItem>
-          <ListItem button key={"collection-agent"}>
-            <ListItemIcon>
-              <InboxIcon />
-              <Link to="/collection-agent" className={classes.itemLink}>
-                {"Agente de cobro"}
-              </Link>
-            </ListItemIcon>
-          </ListItem>
-          <ListItem button key={"admin"}>
-            <ListItemIcon>
-              <InboxIcon />
-              <Link to="/admin" className={classes.itemLink}>
-                {"Admin"}
-              </Link>
-            </ListItemIcon>
-          </ListItem>
+          {login ? (
+            <>
+              <ListItem button key={"home"}>
+                <ListItemIcon>
+                  <InboxIcon />
+                  <Link to="/" className={classes.itemLink}>
+                    {"home"}
+                  </Link>
+                </ListItemIcon>
+              </ListItem>
+              <ListItem button key={"general-user"}>
+                <ListItemIcon>
+                  <InboxIcon />
+                  <Link to="/general-user" className={classes.itemLink}>
+                    {"usuario General"}
+                  </Link>
+                </ListItemIcon>
+              </ListItem>
+              <ListItem button key={"collection-agent"}>
+                <ListItemIcon>
+                  <InboxIcon />
+                  <Link to="/collection-agent" className={classes.itemLink}>
+                    {"Agente de cobro"}
+                  </Link>
+                </ListItemIcon>
+              </ListItem>
+              <ListItem button key={"admin"}>
+                <ListItemIcon>
+                  <InboxIcon />
+                  <Link to="/admin" className={classes.itemLink}>
+                    {"Admin"}
+                  </Link>
+                </ListItemIcon>
+              </ListItem>
+            </>
+          ) : (
+            ""
+          )}
         </List>
       </Drawer>
       <main className={classes.content}>

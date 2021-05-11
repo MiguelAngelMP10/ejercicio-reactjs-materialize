@@ -5,13 +5,16 @@ import "./App.css";
 import Footer from "./components/Footer";
 
 import Routes from "./routes";
+import SistemaProvider from "./context/sistema/Provider";
 
 function App() {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <div className="App">
         <Container>
-          <Routes></Routes>
+          <SistemaProvider>
+            <Routes></Routes>
+          </SistemaProvider>
         </Container>
         <Footer></Footer>
       </div>
