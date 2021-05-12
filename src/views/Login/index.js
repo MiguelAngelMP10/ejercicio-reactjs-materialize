@@ -8,6 +8,8 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useContext, useEffect } from "react";
+import SistemaContext from "../../context/sistema";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,8 +22,17 @@ const useStyles = makeStyles((theme) => ({
     width: "25ch",
   },
 }));
+
 export default function Login() {
   const classes = useStyles();
+
+  const { login, token, getLogin } = useContext(SistemaContext);
+
+  const checkLogin = () => {
+    let username = document.querySelector("#email").value;
+    let password = document.querySelector("#password").value
+    getLogin(username, password).then().catch(null);
+  };
 
   return (
     <Container>
@@ -38,12 +49,13 @@ export default function Login() {
           <div className={classes.root}>
             <InputLabel htmlFor="email">Email</InputLabel>
             <Input name="email" id="email" fullWidth />
-            <TextField label="Password" type="password" fullWidth />
+            <TextField label="Password" type="password" id="password" fullWidth />
             <Button
               variant="contained"
               color="primary"
               fullWidth
               style={{ marginTop: "15px" }}
+              onClick={checkLogin}
             >
               Entrar
             </Button>
