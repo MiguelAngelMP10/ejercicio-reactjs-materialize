@@ -151,6 +151,7 @@ export default function Menu() {
           </IconButton>
         </div>
         <List>
+          {!login ?( 
           <ListItem button key={"Login"}>
             <ListItemIcon>
               <InboxIcon />
@@ -158,7 +159,9 @@ export default function Menu() {
                 {"Login"}
               </Link>
             </ListItemIcon>
-          </ListItem>
+          </ListItem>): (
+            ""
+          )}
           {login ? (
             <>
               <ListItem button key={"home"}>
