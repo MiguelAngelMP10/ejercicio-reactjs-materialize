@@ -42,6 +42,19 @@ export default function SistemaProvider({ children }) {
       });
   };
 
+  const updatePago = async (id, estatus) => {
+    const params = new URLSearchParams();
+    params.append("estatus", estatus);
+    axios
+      .put("http://localhost:8081/pagos/" + id, params)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <SistemaContext.Provider
       value={{
@@ -50,6 +63,7 @@ export default function SistemaProvider({ children }) {
         getLogin,
         pagos,
         getPagos,
+        updatePago
       }}
     >
       {children}

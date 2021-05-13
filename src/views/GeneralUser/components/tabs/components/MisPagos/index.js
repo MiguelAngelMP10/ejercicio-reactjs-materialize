@@ -50,13 +50,16 @@ function CustomPagination() {
 export default function MisPagos() {
   const [open, setOpen] = useState(false);
   const [metodoPago, setMetodoPago] = useState("");
-  const { pagos, getPagos } = useContext(SistemaContext);
+  const { pagos, getPagos, updatePago } = useContext(SistemaContext);
+
+  const [pagado, setPagado] = useState(false);
+
 
   const [row, setRow] = useState([]);
 
   useEffect(() => {
     getPagos().then().catch(null);
-  }, []);
+  }, [pagado]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -65,9 +68,15 @@ export default function MisPagos() {
     setOpen(false);
   };
 
-  const handlePay = () => {
+  const handlePay = async () => {
     setOpen(false);
-    alert("Pagado con " + metodoPago);
+    let monto = document.querySelector("#standard-adornment-monto").value;
+    await updatePago(row.id, 'Pagado').then().catch(null);
+
+    setPagado(true);
+    alert("Pagado con el metodo " + metodoPago + " el monto $"+ monto);
+    setPagado(false);
+
   };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -125,6 +134,7 @@ export default function MisPagos() {
 
   const handleChange = (event) => {
     setMetodoPago(event.target.value);
+
   };
 
   const classes = useStyles();
@@ -172,7 +182,7 @@ export default function MisPagos() {
 
             <TextField
               disabled
-              id="filled-disabled"
+              id="id"
               label="importe"
               defaultValue={row.importe}
               variant="filled"
