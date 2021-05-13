@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   DataGrid,
   GridToolbar,
@@ -16,11 +16,13 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Pasarela from "../Pasarela";
 import Transferencia from "../Transferencia";
 import Efectivo from "../Efectivo";
+import SistemaContext from "../../../../../../context/sistema";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -31,101 +33,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
 }));
-const rows = [
-  {
-    id: 1,
-    concepto: "Inscripción",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-  {
-    id: 2,
-    concepto: "Inscripción",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-  {
-    id: 3,
-    concepto: "Enero",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-  {
-    id: 4,
-    concepto: "Febrero",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-  {
-    id: 5,
-    concepto: "Marzo",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-  {
-    id: 6,
-    concepto: "Abril",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-  {
-    id: 7,
-    concepto: "Inscripción",
-    fechaVencimiento: "05/02/2018",
-  },
-  {
-    id: 8,
-    concepto: "Inscripción",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-  {
-    id: 9,
-    concepto: "Inscripción",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-  {
-    id: 10,
-    concepto: "Inscripción",
-    fechaVencimiento: "05/02/2018",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "pagado",
-  },
-];
 
 function CustomPagination() {
   const { state, apiRef } = useGridSlotComponentProps();
 
   return (
     <Pagination
-      className={{ display: "flex" }}
       color="primary"
       count={state.pagination.pageCount}
       page={state.pagination.page + 1}
@@ -135,8 +48,16 @@ function CustomPagination() {
 }
 
 export default function MisPagos() {
-  const [open, setOpen] = React.useState(false);
-  const [metodoPago, setMetodoPago] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [metodoPago, setMetodoPago] = useState("");
+  const { pagos, getPagos } = useContext(SistemaContext);
+
+  const [row, setRow] = useState([]);
+
+  useEffect(() => {
+    getPagos().then().catch(null);
+  }, []);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -191,6 +112,8 @@ export default function MisPagos() {
             color="primary"
             onClick={() => {
               setOpen(true);
+              setRow(params.row);
+              console.log(params.row);
             }}
           >
             Pagar
@@ -209,7 +132,7 @@ export default function MisPagos() {
   return (
     <div style={{ height: 300, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={pagos}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -230,6 +153,31 @@ export default function MisPagos() {
         </DialogTitle>
         <DialogContent dividers>
           <div>
+            <TextField
+              disabled
+              id="filled-disabled"
+              label="id"
+              defaultValue={row.id}
+              variant="filled"
+              fullWidth={true}
+            />
+            <TextField
+              disabled
+              id="filled-disabled"
+              label="Concepto"
+              defaultValue={row.concepto}
+              variant="filled"
+              fullWidth={true}
+            />
+
+            <TextField
+              disabled
+              id="filled-disabled"
+              label="importe"
+              defaultValue={row.importe}
+              variant="filled"
+              fullWidth={true}
+            />
             <FormControl className={classes.formControl} fullWidth={true}>
               <InputLabel id="demo-simple-select-label">
                 Opcion de pago
