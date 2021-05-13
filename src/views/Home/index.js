@@ -6,8 +6,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-// let Image =
-//   "https://www.consumer.es/wp-content/uploads/2019/07/img_fondo-pantalla-wallpaper-720x474.jpg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,7 +38,7 @@ export default function Home() {
               <CardMedia
                 component="img"
                 alt="avatar joven"
-                image="https://www.atheneapro.com/assets/img/avatar_joven.svg"
+                image="https://worknest.com.mx/wp-content/uploads/2021/03/PORTADA-CAJA.png"
                 title="avatar joven"
               />
             </CardActionArea>
@@ -48,10 +46,10 @@ export default function Home() {
         </Grid>
         <Grid item xs={6}>
           <Typography className={classes.titleColor}>
-            Athenea Pro es una plataforma digital que ofrece.
+            Super caja una plataforma digital que ofrece.
           </Typography>
           <Typography variant="h1" component="h2">
-            Soluciones tecnológicas para la educación.
+            Soluciones tecnológicas.
           </Typography>
         </Grid>
       </Grid>

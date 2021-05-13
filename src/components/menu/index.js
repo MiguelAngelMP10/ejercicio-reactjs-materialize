@@ -1,160 +1,83 @@
 import { useContext, useState } from "react";
 
-import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import { Link } from "react-router-dom";
-import SistemaContext from "../../context/sistema";
+import PropTypes from 'prop-types';
+import AppBar from '@material-ui/core/AppBar';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
 
-const drawerWidth = 240;
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+
+import MenuIcon from '@material-ui/icons/Menu';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import SistemaContext from "../../context/sistema";
+import { Link } from "react-router-dom";
+
+import HomeIcon from '@material-ui/icons/Home';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import PersonIcon from '@material-ui/icons/Person';
+import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+const drawerWidth = 160;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: 50,
-  },
-  hide: {
-    display: "none",
+    display: 'flex',
   },
   drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: "nowrap",
-  },
-  drawerOpen: {
-    width: drawerWidth,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerClose: {
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: "hidden",
-    width: theme.spacing(7) + 1,
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1,
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
     },
   },
-  toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
+  appBar: {
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  drawerPaper: {
+    width: drawerWidth,
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
   },
-  itemLink: {
-    textDecoration: "none",
-    fontSize: "20px",
-    textDecorationColor: "red",
-    color: "blue",
-  },
 }));
-export default function Menu() {
+
+function ResponsiveDrawer(props) {
+  const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(true);
-
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { login } = useContext(SistemaContext);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const drawer = (
+    <div>
+      <div className={classes.toolbar} />
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Ejercicio ReactJS con Materialize
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </div>
-        <List>
+      <List>
           {!login ?( 
           <ListItem button key={"Login"}>
             <ListItemIcon>
-              <InboxIcon />
+              <LockOpenIcon />
               <Link to="/login" className={classes.itemLink}>
                 {"Login"}
               </Link>
@@ -166,7 +89,7 @@ export default function Menu() {
             <>
               <ListItem button key={"home"}>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <HomeIcon />
                   <Link to="/" className={classes.itemLink}>
                     {"home"}
                   </Link>
@@ -174,15 +97,15 @@ export default function Menu() {
               </ListItem>
               <ListItem button key={"general-user"}>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <PersonIcon />
                   <Link to="/general-user" className={classes.itemLink}>
-                    {"usuario General"}
+                    {"Usuario General"}
                   </Link>
                 </ListItemIcon>
               </ListItem>
               <ListItem button key={"collection-agent"}>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <PermContactCalendarIcon />
                   <Link to="/collection-agent" className={classes.itemLink}>
                     {"Agente de cobro"}
                   </Link>
@@ -190,7 +113,7 @@ export default function Menu() {
               </ListItem>
               <ListItem button key={"admin"}>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <SupervisorAccountIcon />
                   <Link to="/admin" className={classes.itemLink}>
                     {"Admin"}
                   </Link>
@@ -201,36 +124,75 @@ export default function Menu() {
             ""
           )}
         </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar}></div>
-      </main>
     </div>
   );
 
-  // return (
-  //   <div>
-  //     <AppBar position="sticky" color="transparent">
-  //       <Toolbar color="inherit" aria-label="menu">
-  //         <Typography className={classes.right} variant="body1" color="inherit">
-  //           <div className={classes.right}>
-  //             <Link to="/">{"Home"}</Link>
-  //           </div>
-  //           <div className={classes.right}>
-  //             <Link to="/general-user">{"usuario General"}</Link>
-  //           </div>
-  //           <div className={classes.right}>
-  //             <Link to="/login">{"Agente de Cobro"}</Link>
-  //           </div>
-  //           <div className={classes.right}>
-  //             <Link to="/login">{"Admin"}</Link>
-  //           </div>
-  //           <div className={classes.right}>
-  //             <Link to="/login">{"Login"}</Link>
-  //           </div>
-  //         </Typography>
-  //       </Toolbar>
-  //     </AppBar>
-  //   </div>
-  // );
+  const container = window !== undefined ? () => window().document.body : undefined;
+
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar position="fixed" className={classes.appBar}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            className={classes.menuButton}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            ReactJS con Materialize
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <nav className={classes.drawer} aria-label="mailbox folders">
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Hidden smUp implementation="css">
+          <Drawer
+            container={container}
+            variant="temporary"
+            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <Hidden xsDown implementation="css">
+          <Drawer
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            variant="permanent"
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+      </nav>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+
+      </main>
+    </div>
+  );
 }
+
+ResponsiveDrawer.propTypes = {
+  /**
+   * Injected by the documentation to work in an iframe.
+   * You won't need it on your project.
+   */
+  window: PropTypes.func,
+};
+
+export default ResponsiveDrawer;

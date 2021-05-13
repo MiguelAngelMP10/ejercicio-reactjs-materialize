@@ -143,15 +143,9 @@ export default function Footer() {
 
                 <CardContent>
                   <Typography variant="body2" color="textSecondary">
-                    ENLACE ATHENEA, S.A DE C.V., se compromete a guardar sus
+                    Super caja se compromete a guardar sus
                     datos personales, durante el tiempo necesario para cumplir
-                    con la finalidad para lo cual fueron solicitados. Asimismo,
-                    le informamos que debido a que la venta, distribución y
-                    soporte de nuestros productos es a través de nuestros socios
-                    de negocio (Distribuidores, Vendedores), sus datos
-                    personales pudieran ser transferidos a alguno de ellos para
-                    dar seguimiento a los productos y/o servicios que usted
-                    contrata con nosotros.
+                    con la finalidad para lo cual fueron solicitados.
                   </Typography>
                 </CardContent>
 
