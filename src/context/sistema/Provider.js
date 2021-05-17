@@ -7,6 +7,8 @@ export default function SistemaProvider({ children }) {
   const [login, setLogin] = useState(false);
   const [token, setToken] = useState("");
   const [pagos, setPagos] = useState([]);
+  const [suscripciones, setSuscripciones] = useState([]);
+
 
   const getLogin = async (username, password) => {
     try {
@@ -55,6 +57,33 @@ export default function SistemaProvider({ children }) {
       });
   };
 
+
+
+  const getSuscripciones = async () => {
+    axios
+      .get("http://localhost:8081/suscripciones")
+      .then(function (response) {
+        setSuscripciones(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const updateSucripciones = async (id, estatus) => {
+    const params = new URLSearchParams();
+    params.append("estatus", estatus);
+    axios
+      .put("http://localhost:8081/suscripciones/" + id, params)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+
   return (
     <SistemaContext.Provider
       value={{
@@ -63,7 +92,10 @@ export default function SistemaProvider({ children }) {
         getLogin,
         pagos,
         getPagos,
-        updatePago
+        updatePago,
+        getSuscripciones,
+        suscripciones,
+        updateSucripciones
       }}
     >
       {children}

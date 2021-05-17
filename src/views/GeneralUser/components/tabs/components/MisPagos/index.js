@@ -140,7 +140,7 @@ export default function MisPagos() {
   const classes = useStyles();
 
   return (
-    <div style={{ height: 300, width: "100%" }}>
+    <div style={{ height: 500, width: "100%" }}>
       <DataGrid
         rows={pagos}
         columns={columns}
