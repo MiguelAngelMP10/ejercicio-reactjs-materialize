@@ -54,7 +54,6 @@ export default function MisPagos() {
 
   const [pagado, setPagado] = useState(false);
 
-
   const [row, setRow] = useState([]);
 
   useEffect(() => {
@@ -71,12 +70,11 @@ export default function MisPagos() {
   const handlePay = async () => {
     setOpen(false);
     let monto = document.querySelector("#standard-adornment-monto").value;
-    await updatePago(row.id, 'Pagado').then().catch(null);
+    await updatePago(row.id, "Pagado").then().catch(null);
 
     setPagado(true);
-    alert("Pagado con el metodo " + metodoPago + " el monto $"+ monto);
+    alert("Pagado con el metodo " + metodoPago + " el monto $" + monto);
     setPagado(false);
-
   };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -116,17 +114,20 @@ export default function MisPagos() {
       width: 130,
       renderCell: (params) => (
         <strong>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              setOpen(true);
-              setRow(params.row);
-              console.log(params.row);
-            }}
-          >
-            Pagar
-          </Button>
+          {params.row.estatus !== "Pagado" ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                setOpen(true);
+                setRow(params.row);
+              }}
+            >
+              Pagar
+            </Button>
+          ) : (
+            "Pagado"
+          )}
         </strong>
       ),
     },
@@ -134,7 +135,6 @@ export default function MisPagos() {
 
   const handleChange = (event) => {
     setMetodoPago(event.target.value);
-
   };
 
   const classes = useStyles();
