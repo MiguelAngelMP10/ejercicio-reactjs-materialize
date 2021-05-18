@@ -39,6 +39,7 @@ export default function MisSuscripciones() {
   const [metodoPago, setMetodoPago] = useState("");
 
   const [pagado, setPagado] = useState(false);
+  const [suscrito, setSuscrito ] = useState(false);
   const classes = useStyles();
 
   const handlePay = async () => {
@@ -54,7 +55,7 @@ export default function MisSuscripciones() {
   };
   useEffect(() => {
     getSuscripciones().then().catch(null);
-  }, [pagado]);
+  }, [pagado, suscrito]);
 
   const handleChange = (event) => {
     setMetodoPago(event.target.value);
@@ -62,12 +63,15 @@ export default function MisSuscripciones() {
 
   const [cancelar, setCancelar] = useState(false);
 
-  const handleClickCancelar = () => {
-    setCancelar(true);
-  };
-
   const handleCloseCancel = () => {
     setCancelar(false);
+  };
+
+  const handleCancelSubscription = async () => {
+    setCancelar(false);
+    setSuscrito(true);
+    await updateSucripciones(row.id, "Cancelado").then().catch(null);
+    setSuscrito(false);
   };
 
   const columns = [
@@ -120,11 +124,12 @@ export default function MisSuscripciones() {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => {
-                //setOpen(true);
-              }}
               startIcon={<CancelIcon />}
-              onClick={handleClickCancelar}
+              
+              onClick={() => {
+                setRow(params.row);
+                setCancelar(true);
+              }}
             >
               cancelar
             </Button>
@@ -221,19 +226,18 @@ export default function MisSuscripciones() {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle id="alert-dialog-slide-title">
-          {"Use Google's location service?"}
+          {"¿Esta seguro de cancelar la suscripcion?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
+            Se dejara de cobrar el valor de la subcripción
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseCancel} color="secondary">
             No
           </Button>
-          <Button onClick={handleCloseCancel} color="primary">
+          <Button onClick={handleCancelSubscription} color="primary">
             Si
           </Button>
         </DialogActions>

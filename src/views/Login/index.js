@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import SistemaContext from "../../context/sistema";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const classes = useStyles();
 
-  const { login, token, getLogin } = useContext(SistemaContext);
+  const { getLogin } = useContext(SistemaContext);
 
   const checkLogin = () => {
     let username = document.querySelector("#email").value;
