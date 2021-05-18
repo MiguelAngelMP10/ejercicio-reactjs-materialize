@@ -11,8 +11,6 @@ import SistemaContext from "../context/sistema";
 
 export default function Routes() {
   const { login, token } = useContext(SistemaContext);
-
-  console.log(login);
   return (
     <Router>
       <Menu></Menu>

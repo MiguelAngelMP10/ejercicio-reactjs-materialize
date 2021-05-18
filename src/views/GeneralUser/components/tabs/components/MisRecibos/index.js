@@ -1,67 +1,107 @@
-import * as React from "react";
+import { useState, useContext, useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { Button } from "@material-ui/core";
-import PrintIcon from "@material-ui/icons/Print";
-const columns = [
-  { field: "id", headerName: "ID", width: 70 },
-  { field: "sucripcion", headerName: "Descripcion recibo", width: 300 },
-  { field: "fechaInicio", headerName: "fecha Inicio", width: 150 },
-  { field: "estatus", headerName: "Estatus", width: 130 },
-  {
-    field: "pagar",
-    headerName: "Pagar",
-    width: 150,
-    renderCell: (params) => (
-      <strong>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => {
-            //setOpen(true);
-          }}
-          startIcon={<PrintIcon />}
-        >
-          Imprimir
-        </Button>
-      </strong>
-    ),
-  },
-];
-
-const rows = [
-  {
-    id: 1,
-    sucripcion: "Uniformes",
-    fechaInicio: "19/09/2020",
-    estatus: "Vigente",
-    pagar: "",
-    renovar: "",
-    cancelar: "",
-  },
-  {
-    id: 2,
-    sucripcion: "Voletin de ofertas",
-    fechaInicio: "19/09/2020",
-    estatus: "Vigente",
-    pagar: "",
-    renovar: "",
-    cancelar: "",
-  },
-  {
-    id: 3,
-    sucripcion: "Desayunador",
-    fechaInicio: "19/09/2020",
-    estatus: "Cancelado",
-    pagar: "",
-    renovar: "",
-    cancelar: "",
-  },
-];
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@material-ui/core";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import SistemaContext from "../../../../../../context/sistema";
 
 export default function MisRecibos() {
+  const { recibos, getRecibos } = useContext(SistemaContext);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [row, setRow] = useState([]);
+
+  useEffect(() => {
+    getRecibos().then().catch(null);
+  }, []);
+
+  const columns = [
+    { field: "id", headerName: "ID", width: 70 },
+    {
+      field: "descripcionRecibo",
+      headerName: "Descripcion recibo",
+      width: 300,
+    },
+    { field: "tipoPago", headerName: "tipo Pago", width: 200 },
+    { field: "estatus", headerName: "Estatus", width: 150 },
+    {
+      field: "Ver recibo",
+      headerName: "Ver Recibo",
+      width: 150,
+      renderCell: (params) => (
+        <strong>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              setOpenDialog(true);
+              setRow(params.row);
+            }}
+            startIcon={<VisibilityIcon />}
+          >
+            Ver
+          </Button>
+        </strong>
+      ),
+    },
+  ];
+
+  const handleCloseModalRecibo = () => {
+    setOpenDialog(false);
+  };
+
   return (
     <div style={{ height: 500, width: "100%" }}>
-      <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+      <DataGrid rows={recibos} columns={columns} pageSize={5} />
+
+      <Dialog
+        open={openDialog}
+        keepMounted
+        onClose={handleCloseModalRecibo}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          {"Detalles del Recibo"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <TextField disabled id="standard-id" label="id" value={row.id} fullWidth />
+            <TextField
+              disabled
+              id="standard-descripcionRecibo"
+              label="Descripcion Recibo"
+              value={row.descripcionRecibo}
+              fullWidth
+            />
+            <TextField
+              disabled
+              id="standard-tipoPago"
+              label="Tipo Pago"
+              value={row.tipoPago}
+              fullWidth
+            />
+            <TextField
+              disabled
+              id="standard-estatus"
+              label="Estatus"
+              value={row.estatus}
+              fullWidth
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModalRecibo} color="secondary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
