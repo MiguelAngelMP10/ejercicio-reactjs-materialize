@@ -39,7 +39,8 @@ export default function MisSuscripciones() {
   const [metodoPago, setMetodoPago] = useState("");
 
   const [pagado, setPagado] = useState(false);
-  const [suscrito, setSuscrito ] = useState(false);
+  const [suscrito, setSuscrito] = useState(false);
+  const [renovado, setRenovado] = useState(false);
   const classes = useStyles();
 
   const handlePay = async () => {
@@ -55,7 +56,7 @@ export default function MisSuscripciones() {
   };
   useEffect(() => {
     getSuscripciones().then().catch(null);
-  }, [pagado, suscrito]);
+  }, [pagado, suscrito, renovado]);
 
   const handleChange = (event) => {
     setMetodoPago(event.target.value);
@@ -72,6 +73,21 @@ export default function MisSuscripciones() {
     setSuscrito(true);
     await updateSucripciones(row.id, "Cancelado").then().catch(null);
     setSuscrito(false);
+  };
+
+  //renovar
+
+  const [modalRenovar, setModalRenovar] = useState(false);
+
+  const handleCloseModalRonovar= () => {
+    setModalRenovar(false);
+  };
+
+  const   handleRenovarSubscription = async () => {
+    setModalRenovar(false);
+    setRenovado(true);
+    await updateSucripciones(row.id, "Pagado").then().catch(null);
+    setRenovado(false);
   };
 
   const columns = [
@@ -114,7 +130,8 @@ export default function MisSuscripciones() {
               variant="outlined"
               color="default"
               onClick={() => {
-                //setOpen(true);
+                setRow(params.row);
+                setModalRenovar(true);
               }}
               startIcon={<PaymentIcon />}
             >
@@ -125,7 +142,6 @@ export default function MisSuscripciones() {
               variant="outlined"
               color="secondary"
               startIcon={<CancelIcon />}
-              
               onClick={() => {
                 setRow(params.row);
                 setCancelar(true);
@@ -144,7 +160,6 @@ export default function MisSuscripciones() {
   return (
     <div style={{ height: 500, width: "100%" }}>
       <DataGrid rows={suscripciones} columns={columns} pageSize={10} />
-
       <Dialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
@@ -217,7 +232,7 @@ export default function MisSuscripciones() {
           </Button>
         </DialogActions>
       </Dialog>
-
+      
       <Dialog
         open={cancelar}
         keepMounted
@@ -238,6 +253,33 @@ export default function MisSuscripciones() {
             No
           </Button>
           <Button onClick={handleCancelSubscription} color="primary">
+            Si
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
+
+      <Dialog
+        open={modalRenovar}
+        keepMounted
+        onClose={handleCloseModalRonovar}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          {"¿Esta seguro de Renovar la suscripcion?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Se cobrara el valor de la subcripción
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModalRonovar} color="secondary">
+            No
+          </Button>
+          <Button onClick={handleRenovarSubscription} color="primary">
             Si
           </Button>
         </DialogActions>
