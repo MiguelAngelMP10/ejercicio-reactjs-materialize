@@ -1,23 +1,26 @@
-import * as React from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   DataGrid,
   GridToolbar,
   useGridSlotComponentProps,
 } from "@material-ui/data-grid";
 import Pagination from "@material-ui/lab/Pagination";
+import SistemaContext from "../../../../../../context/sistema";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import {
+  AppBar,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
+  List,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -27,18 +30,10 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
-}));
-const rows = [
-  {
-    id: 1,
-    nombre: "Miguel Angel",
-    apellidoPaterno: "Muñoz",
-    apellidoMaterno: "Pozos",
-    pagos:""
-
+  table: {
+    minWidth: 650,
   },
-
-];
+}));
 
 function CustomPagination() {
   const { state, apiRef } = useGridSlotComponentProps();
@@ -55,7 +50,9 @@ function CustomPagination() {
 }
 
 export default function PorUsuario() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const { usuariosPagos, getUsuariosPagos } = useContext(SistemaContext);
+  const [row, setRow] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -82,32 +79,39 @@ export default function PorUsuario() {
       width: 130,
       renderCell: (params) => (
         <strong>
-
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => {
-                setOpen(true);
-                // setRow(params.row);
-              }}
-            >
-              Pagos
-            </Button>
-         
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              setRow(params.row);
+              setOpen(true);
+            }}
+          >
+            Pagos
+          </Button>
         </strong>
       ),
     },
-  
   ];
 
-
-
+  const columnsPagos = [
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "concepto", headerName: "concepto", width: 200 },
+    { field: "fechaVencimiento", headerName: "fechaVencimiento", width: 200 },
+    { field: "importe", headerName: "importe", width: 200 },
+    { field: "saldos", headerName: "saldos", width: 200 },
+  ];
   const classes = useStyles();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("lg"));
+  useEffect(() => {
+    getUsuariosPagos().then().catch(null);
+  }, []);
 
   return (
     <div style={{ height: 300, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={usuariosPagos}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -121,17 +125,15 @@ export default function PorUsuario() {
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        fullWidth={true}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Pagos del usuario: "Miguel Angel Muñoz Pozos",
+          Pagos del usuario:{" "}
+          {`${row.nombre} ${row.apellidoPaterno} ${row.apellidoMaterno}`},
         </DialogTitle>
         <DialogContent dividers>
           <div>
-            <FormControl className={classes.formControl} fullWidth={true}>
-            
-
-            
+            <FormControl className={classes.formControl}>
+              {listPagos(row.pagos)}
             </FormControl>
           </div>
         </DialogContent>
@@ -145,4 +147,7 @@ export default function PorUsuario() {
   );
 }
 
-
+function listPagos(pagos) {
+ 
+  //
+}

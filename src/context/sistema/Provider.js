@@ -9,7 +9,7 @@ export default function SistemaProvider({ children }) {
   const [pagos, setPagos] = useState([]);
   const [suscripciones, setSuscripciones] = useState([]);
   const [recibos, setRecibos] = useState([]);
-
+  const [usuariosPagos, setUsuariosPagos] = useState([]);
 
   const getLogin = async (username, password) => {
     try {
@@ -95,6 +95,18 @@ export default function SistemaProvider({ children }) {
   };
 
 
+  const getUsuariosPagos = async () => {
+    axios
+      .get("http://localhost:8082/usuarios?expand=usuarioPagos,pagos")
+      .then(function (response) {
+        setUsuariosPagos(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+
 
 
 
@@ -111,7 +123,9 @@ export default function SistemaProvider({ children }) {
         suscripciones,
         updateSucripciones,
         recibos, 
-        getRecibos  
+        getRecibos,
+        usuariosPagos,
+        getUsuariosPagos  
       }}
     >
       {children}
