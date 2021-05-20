@@ -21,7 +21,6 @@ import {
   Select,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { AccountCircle } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {

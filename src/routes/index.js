@@ -6,11 +6,11 @@ import Menu from "../components/menu";
 import GeneralUser from "../views/GeneralUser";
 import CollectionAgent from "../views/CollectionAgent";
 import Admin from "../views/Admin";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import SistemaContext from "../context/sistema";
 
 export default function Routes() {
-  const { login, token } = useContext(SistemaContext);
+  const { login } = useContext(SistemaContext);
   return (
     <Router>
       <Menu></Menu>
