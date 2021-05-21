@@ -11,6 +11,7 @@ export default function SistemaProvider({ children }) {
   const [recibos, setRecibos] = useState([]);
   const [usuariosPagos, setUsuariosPagos] = useState([]);
   const [pagosPagados, setPagosPagados] = useState([]);
+  const [pagosNoPagados, setPagosNoPagados] = useState([]);
 
   const getLogin = async (username, password) => {
     try {
@@ -121,6 +122,17 @@ export default function SistemaProvider({ children }) {
   };
 
 
+  const getPagosNoPagodos = async () => {
+    axios
+      .get("http://localhost:8081/pagos/no-pagados")
+      .then(function (response) {
+        setPagosNoPagados(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <SistemaContext.Provider
       value={{
@@ -138,7 +150,9 @@ export default function SistemaProvider({ children }) {
         usuariosPagos,
         getUsuariosPagos,
         pagosPagados,
-        getPagosPagodos  
+        getPagosPagodos,
+        pagosNoPagados,
+        getPagosNoPagodos 
       }}
     >
       {children}
