@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useContext, useEffect, useState } from "react";
+
 import {
   DataGrid,
   GridToolbar,
@@ -21,6 +22,7 @@ import {
   Select,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import SistemaContext from "../../../../../../context/sistema";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -34,21 +36,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
 }));
-const rows = [
-  {
-    id: 1,
-    penalizacion: "penalizacion 1",
-    descripcion: "descripcion penalizacion",
-    estatus: "Activo",
-  },
-
-  {
-    id: 2,
-    penalizacion: "penalizacion 2",
-    descripcion: "descripcion penalizacion",
-    estatus: "Activo",
-  },
-];
 
 function CustomPagination() {
   const { state, apiRef } = useGridSlotComponentProps();
@@ -65,26 +52,88 @@ function CustomPagination() {
 }
 
 export default function ListPenalizaciones() {
-  const [open, setOpen] = React.useState(false);
-  const [user, setUser] = React.useState("");
+  const [openModalAgregar, setOpenModalAgregar] = useState(false);
+  const [openModalModificar, setOpenModalModificar] = useState(false);
 
-  const handleClose = () => {
-    setOpen(false);
+  const [estatus, setEstatus] = useState(1);
+  const [changes, setChanges] = useState(false);
+  const {
+    getPenalizaciones,
+    addPenalizacion,
+    deletepenalizaciones,
+    updatepenalizaciones,
+    penalizaciones,
+  } = useContext(SistemaContext);
+
+  const [openModalEliminar, setOpenModalEliminar] = useState(false);
+  const [row, setRow] = useState({});
+  useEffect(() => {
+    getPenalizaciones().then().catch(null);
+  }, [changes]);
+
+  const handleCloseModalEliminar = async () => {
+    setOpenModalEliminar(false);
+
+    await deletepenalizaciones(row.id).then().catch(null);
+    setChanges(true);
+    setChanges(false);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleCloseModalAgregar = () => {
+    setOpenModalAgregar(false);
   };
 
-  const handleAddUser = () => {
-    setOpen(false);
-    alert(user);
+  const handleClickOpenModalAgregar = () => {
+    setOpenModalAgregar(true);
+  };
+
+  const handleCloseModalModificar = () => {
+    setOpenModalModificar(false);
+  };
+
+  const handleClickOpenModalModificar = () => {
+    setOpenModalModificar(true);
+  };
+
+  const handleAddpenalizacion = async () => {
+    setOpenModalAgregar(false);
+    let penalizacion = {
+      penalizacion: document.querySelector("#nombre-penalizacion").value,
+      descripcion: document.querySelector("#descripcion").value,
+      estatus: estatus,
+    };
+
+    await addPenalizacion(penalizacion).then().catch(null);
+    setChanges(true);
+    setChanges(false);
+  };
+
+  const handleUpdatepenalizacion = async () => {
+    setOpenModalModificar(false);
+    let penalizacion = {
+      penalizacion: document.querySelector("#nombre-penalizacion").value,
+      descripcion: document.querySelector("#descripcion").value,
+      estatus: estatus,
+    };
+
+    await updatepenalizaciones(row.id, penalizacion).then().catch(null);
+    setChanges(true);
+    setChanges(false);
+  };
+  const handleChange = (event) => {
+    setEstatus(event.target.value);
   };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "penalizacion", headerName: "penalizacions", width: 250 },
+    { field: "penalizacion", headerName: "penalizacion", width: 250 },
     { field: "descripcion", headerName: "Descripcion", width: 250 },
-    { field: "estatus", headerName: "Estatus", width: 250 },
+    {
+      field: "estatus",
+      headerName: "Estatus",
+      width: 250,
+      renderCell: (params) =>
+        Boolean(params.row.estatus) ? "Activo" : "Inactivo",
+    },
     {
       field: "eliminar",
       headerName: "Eliminar",
@@ -95,7 +144,8 @@ export default function ListPenalizaciones() {
             variant="outlined"
             color="secondary"
             onClick={() => {
-              setOpen(true);
+              setOpenModalEliminar(true);
+              setRow(params.row);
             }}
           >
             Eliminar
@@ -113,7 +163,8 @@ export default function ListPenalizaciones() {
             variant="outlined"
             color="primary"
             onClick={() => {
-              setOpen(true);
+              setOpenModalModificar(true);
+              setRow(params.row);
             }}
           >
             Modificar
@@ -123,22 +174,22 @@ export default function ListPenalizaciones() {
     },
   ];
 
-  const handleChange = (event) => {
-    setUser(event.target.value);
-  };
-
   const classes = useStyles();
 
   return (
     <div style={{ height: 300, width: "100%" }}>
       <Grid container direction="row" justify="flex-end" alignItems="center">
-        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={handleClickOpenModalAgregar}
+        >
           <AddIcon></AddIcon>
           Agregar Penalizacion
         </Button>
       </Grid>
       <DataGrid
-        rows={rows}
+        rows={penalizaciones}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -148,21 +199,23 @@ export default function ListPenalizaciones() {
         }}
       />
 
+      {/* Modal para agregar  */}
       <Dialog
-        onClose={handleClose}
+        onClose={handleCloseModalAgregar}
         aria-labelledby="customized-dialog-title"
-        open={open}
+        open={openModalAgregar}
         fullWidth={true}
       >
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+        <DialogTitle
+          id="customized-dialog-title"
+          onClose={handleCloseModalAgregar}
+        >
           Agregar penalizacion
         </DialogTitle>
         <DialogContent dividers>
           <div>
             <FormControl className={classes.margin} fullWidth={true}>
-              <InputLabel htmlFor="nombre-penalizacion">
-                Nombre penalizacion
-              </InputLabel>
+              <InputLabel htmlFor="nombre-penalizacion">Nombre penalizacion</InputLabel>
               <Input
                 id="nombre-penalizacion"
                 startAdornment={
@@ -184,22 +237,111 @@ export default function ListPenalizaciones() {
               <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
-                id="demo-simple-select"
+                id="estatus-select"
                 onChange={handleChange}
               >
-                <MenuItem value={"activo"}>Activo</MenuItem>
-                <MenuItem value={"inactivo"}>Inactivo</MenuItem>
+                <MenuItem value={"1"}>Activo</MenuItem>
+                <MenuItem value={"0"}>Inactivo</MenuItem>
               </Select>
             </FormControl>
           </div>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose} color="secondary">
+          <Button autoFocus onClick={handleCloseModalAgregar} color="secondary">
             Cerrar
           </Button>
-          <Button autoFocus onClick={handleAddUser} color="primary">
+          <Button autoFocus onClick={handleAddpenalizacion} color="primary">
             <AddIcon></AddIcon>
             Agregar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal para confirmar eliminacion  */}
+      <Dialog
+        open={openModalEliminar}
+        onClose={handleCloseModalEliminar}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"¿Esta Seguro de eliminar esta penalizacion?"}
+        </DialogTitle>
+
+        <DialogActions>
+          <Button
+            onClick={handleCloseModalEliminar}
+            color="secondary"
+            autoFocus
+          >
+            Cancelar
+          </Button>
+          <Button onClick={handleCloseModalEliminar} color="primary">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal para modificar  */}
+      <Dialog
+        onClose={handleCloseModalModificar}
+        aria-labelledby="customized-dialog-title"
+        open={openModalModificar}
+        fullWidth={true}
+      >
+        <DialogTitle
+          id="customized-dialog-title"
+          onClose={handleCloseModalModificar}
+        >
+          Modificar penalizacion
+        </DialogTitle>
+        <DialogContent dividers>
+          <div>
+            <FormControl className={classes.margin} fullWidth={true}>
+              <InputLabel htmlFor="nombre-penalizacion">Nombre penalizacion</InputLabel>
+              <Input
+                id="nombre-penalizacion"
+                startAdornment={
+                  <InputAdornment position="start"></InputAdornment>
+                }
+                defaultValue={row.penalizacion}
+              />
+            </FormControl>
+            <FormControl className={classes.margin} fullWidth={true}>
+              <InputLabel htmlFor="descripcion">Descripcion</InputLabel>
+              <Input
+                id="descripcion"
+                startAdornment={
+                  <InputAdornment position="start"></InputAdornment>
+                }
+                defaultValue={row.descripcion}
+              />
+            </FormControl>
+
+            <FormControl className={classes.formControl} fullWidth={true}>
+              <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="estatus-select"
+                defaultValue={row.estatus}
+                onChange={handleChange}
+              >
+                <MenuItem value={"1"}>Activo</MenuItem>
+                <MenuItem value={"0"}>Inactivo</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={handleCloseModalModificar}
+            color="secondary"
+          >
+            Cerrar
+          </Button>
+          <Button autoFocus onClick={handleUpdatepenalizacion} color="primary">
+            Actualizar
           </Button>
         </DialogActions>
       </Dialog>

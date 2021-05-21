@@ -17,6 +17,9 @@ export default function SistemaProvider({ children }) {
   const [conceptos, setConceptos] = useState([]);
   const [concepto, setConcepto] = useState({});
 
+  const [penalizaciones, setPenalizaciones] = useState([]);
+  const [penalizacion, setPenalizacion] = useState({});
+
   const getLogin = async (username, password) => {
     try {
       const params = new FormData();
@@ -220,8 +223,64 @@ export default function SistemaProvider({ children }) {
       });
   };
 
+  //penalizaciones
+  const getPenalizaciones = async () => {
+    axios
+      .get("http://localhost:8082/penalizaciones")
+      .then(function (response) {
+        setPenalizaciones(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
-  
+  const addPenalizacion = async (info) => {
+    const params = new FormData();
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+
+    axios
+      .post("http://localhost:8082/penalizaciones", params)
+      .then(function (response) {
+        setPenalizacion(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const deletepenalizaciones = async (id) => {
+    axios
+      .delete(`http://localhost:8082/penalizaciones/${id}`)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const updatepenalizaciones = async (id, info) => {
+    const params = new URLSearchParams();
+
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+    axios
+      .put(`http://localhost:8082/penalizaciones/${id}`, params)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   return (
     <SistemaContext.Provider
@@ -247,12 +306,20 @@ export default function SistemaProvider({ children }) {
         getUsuarios,
         addUsuario,
         usuario,
+        
         getConceptos,
         addConcepto,
         deleteConcepto,
+        updateConcepto,
         conceptos,
         concepto,
-        updateConcepto
+
+        getPenalizaciones,
+        addPenalizacion,
+        deletepenalizaciones,
+        updatepenalizaciones,
+        penalizaciones,
+        penalizacion,
       }}
     >
       {children}
