@@ -33,7 +33,7 @@ function CustomPagination() {
 export default function Realizados() {
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "usuario", headerName: "Usuario", width: 270 },
+    { field: "concepto", headerName: "concepto", width: 270 },
     {
       field: "importe",
       headerName: "Importe",
