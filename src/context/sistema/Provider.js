@@ -10,6 +10,7 @@ export default function SistemaProvider({ children }) {
   const [suscripciones, setSuscripciones] = useState([]);
   const [recibos, setRecibos] = useState([]);
   const [usuariosPagos, setUsuariosPagos] = useState([]);
+  const [pagosPagados, setPagosPagados] = useState([]);
 
   const getLogin = async (username, password) => {
     try {
@@ -108,6 +109,16 @@ export default function SistemaProvider({ children }) {
 
 
 
+  const getPagosPagodos = async () => {
+    axios
+      .get("http://localhost:8081/pagos/pagados")
+      .then(function (response) {
+        setPagosPagados(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
 
   return (
@@ -125,7 +136,9 @@ export default function SistemaProvider({ children }) {
         recibos, 
         getRecibos,
         usuariosPagos,
-        getUsuariosPagos  
+        getUsuariosPagos,
+        pagosPagados,
+        getPagosPagodos  
       }}
     >
       {children}
