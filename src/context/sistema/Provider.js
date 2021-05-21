@@ -14,6 +14,8 @@ export default function SistemaProvider({ children }) {
   const [pagosNoPagados, setPagosNoPagados] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [usuario, setUsuario] = useState({});
+  const [conceptos, setConceptos] = useState([]);
+  const [concepto, setConcepto] = useState({});
 
   const getLogin = async (username, password) => {
     try {
@@ -141,10 +143,9 @@ export default function SistemaProvider({ children }) {
       });
   };
 
-
   const addUsuario = async (info) => {
     const params = new FormData();
-    for (let clave in info){
+    for (let clave in info) {
       if (info.hasOwnProperty(clave)) {
         params.append(clave, info[clave]);
       }
@@ -153,12 +154,42 @@ export default function SistemaProvider({ children }) {
     axios
       .post("http://localhost:8082/usuarios", params)
       .then(function (response) {
-        setUsuario(response)
+        setUsuario(response);
       })
       .catch(function (error) {
         console.log(error);
       });
-  }
+  };
+
+  //conceptos
+  const getConceptos = async () => {
+    axios
+      .get("http://localhost:8082/conceptos")
+      .then(function (response) {
+        setConceptos(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const addConcepto = async (info) => {
+    const params = new FormData();
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+
+    axios
+      .post("http://localhost:8082/conceptos", params)
+      .then(function (response) {
+        setConcepto(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   return (
     <SistemaContext.Provider
@@ -183,7 +214,11 @@ export default function SistemaProvider({ children }) {
         usuarios,
         getUsuarios,
         addUsuario,
-        usuario
+        usuario,
+        getConceptos,
+        addConcepto,
+        conceptos,
+        concepto,
       }}
     >
       {children}

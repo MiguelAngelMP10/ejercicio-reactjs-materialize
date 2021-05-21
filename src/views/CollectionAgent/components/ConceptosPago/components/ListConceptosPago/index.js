@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useContext, useEffect, useState } from "react";
+
 import {
   DataGrid,
   GridToolbar,
@@ -21,7 +22,7 @@ import {
   Select,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { AccountCircle } from "@material-ui/icons";
+import SistemaContext from "../../../../../../context/sistema";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -35,21 +36,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
 }));
-const rows = [
-  {
-    id: 1,
-    concepto: "concepto 1",
-    descripcion: "descripcion concepto",
-    estatus: "Activo",
-  },
-
-  {
-    id: 2,
-    concepto: "concepto 2",
-    descripcion: "descripcion concepto",
-    estatus: "Activo",
-  },
-];
 
 function CustomPagination() {
   const { state, apiRef } = useGridSlotComponentProps();
@@ -66,26 +52,46 @@ function CustomPagination() {
 }
 
 export default function ListConceptosPago() {
-  const [open, setOpen] = React.useState(false);
-  const [user, setUser] = React.useState("");
+  const [openModalAgregar, setOpenModalAgregar] = useState(false);
+  const [estatus, setEstatus] = useState(1);
+  const [changes, setChanges] = useState(false);
 
-  const handleClose = () => {
-    setOpen(false);
+  const { getConceptos, conceptos, addConcepto } = useContext(SistemaContext);
+
+  const handleCloseModalAgregar = () => {
+    setOpenModalAgregar(false);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpenModalAgregar = () => {
+    setOpenModalAgregar(true);
   };
 
-  const handleAddUser = () => {
-    setOpen(false);
-    alert(user);
+  const handleAddConcepto = async() => {
+    setOpenModalAgregar(false);
+    let concepto = {
+      concepto: document.querySelector("#nombre-concepto").value,
+      descripcion: document.querySelector("#descripcion").value,
+      estatus: estatus,
+    };
+
+    await addConcepto(concepto).then().catch(null);
+    setChanges(true)
+    setChanges(false)
+  };
+
+  const handleChange = (event) => {
+    setEstatus(event.target.value);
   };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "concepto", headerName: "Conceptos", width: 250 },
     { field: "descripcion", headerName: "Descripcion", width: 250 },
-    { field: "estatus", headerName: "Estatus", width: 250 },
+    {
+      field: "estatus",
+      headerName: "Estatus",
+      width: 250,
+      renderCell: (params) => (Boolean(params.row.estatus) ? "Activo" : "Inactivo"),
+    },
     {
       field: "eliminar",
       headerName: "Eliminar",
@@ -96,7 +102,7 @@ export default function ListConceptosPago() {
             variant="outlined"
             color="secondary"
             onClick={() => {
-              setOpen(true);
+              //setOpen(true);
             }}
           >
             Eliminar
@@ -114,7 +120,7 @@ export default function ListConceptosPago() {
             variant="outlined"
             color="primary"
             onClick={() => {
-              setOpen(true);
+              // setOpen(true);
             }}
           >
             Modificar
@@ -124,22 +130,27 @@ export default function ListConceptosPago() {
     },
   ];
 
-  const handleChange = (event) => {
-    setUser(event.target.value);
-  };
+
+  useEffect(() => {
+    getConceptos().then().catch(null);
+  }, [changes]);
 
   const classes = useStyles();
 
   return (
     <div style={{ height: 300, width: "100%" }}>
       <Grid container direction="row" justify="flex-end" alignItems="center">
-        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={handleClickOpenModalAgregar}
+        >
           <AddIcon></AddIcon>
           Agregar concepto
         </Button>
       </Grid>
       <DataGrid
-        rows={rows}
+        rows={conceptos}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -149,13 +160,17 @@ export default function ListConceptosPago() {
         }}
       />
 
+      {/* Modal para agregar  */}
       <Dialog
-        onClose={handleClose}
+        onClose={handleCloseModalAgregar}
         aria-labelledby="customized-dialog-title"
-        open={open}
+        open={openModalAgregar}
         fullWidth={true}
       >
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+        <DialogTitle
+          id="customized-dialog-title"
+          onClose={handleCloseModalAgregar}
+        >
           Agregar Concepto
         </DialogTitle>
         <DialogContent dividers>
@@ -183,20 +198,20 @@ export default function ListConceptosPago() {
               <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
-                id="demo-simple-select"
+                id="estatus-select"
                 onChange={handleChange}
               >
-                <MenuItem value={"activo"}>Activo</MenuItem>
-                <MenuItem value={"inactivo"}>Inactivo</MenuItem>
+                <MenuItem value={"1"}>Activo</MenuItem>
+                <MenuItem value={"0"}>Inactivo</MenuItem>
               </Select>
             </FormControl>
           </div>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose} color="secondary">
+          <Button autoFocus onClick={handleCloseModalAgregar} color="secondary">
             Cerrar
           </Button>
-          <Button autoFocus onClick={handleAddUser} color="primary">
+          <Button autoFocus onClick={handleAddConcepto} color="primary">
             <AddIcon></AddIcon>
             Agregar
           </Button>
