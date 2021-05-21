@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   DataGrid,
   GridToolbar,
@@ -17,11 +17,10 @@ import {
   Input,
   InputAdornment,
   InputLabel,
-  MenuItem,
-  Select,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { AccountCircle } from "@material-ui/icons";
+import SistemaContext from "../../../../../../context/sistema";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -35,45 +34,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
 }));
-const rows = [
-  {
-    id: 1,
-    usuario: "Miguel Angel",
-    apellidoPaterno: "Muñoz",
-    apellidoMaterno: "Pozos",
-  },
-
-  {
-    id: 6,
-    usuario: "Miguel ",
-    apellidoPaterno: "sanchez",
-    apellidoMaterno: "",
-  },
-  {
-    id: 7,
-    usuario: "Jorge",
-    apellidoPaterno: "Cortez",
-    apellidoMaterno: "Fuentes",
-  },
-  {
-    id: 8,
-    usuario: "Ara",
-    apellidoPaterno: "Nava",
-    apellidoMaterno: "",
-  },
-  {
-    id: 9,
-    usuario: "Pedro",
-    apellidoPaterno: "Cruz",
-    apellidoMaterno: "",
-  },
-  {
-    id: 10,
-    usuario: "Miguel Angel",
-    apellidoPaterno: "Marquez",
-    apellidoMaterno: "",
-  },
-];
 
 function CustomPagination() {
   const { state, apiRef } = useGridSlotComponentProps();
@@ -90,8 +50,15 @@ function CustomPagination() {
 }
 
 export default function UserList() {
-  const [open, setOpen] = React.useState(false);
-  const [user, setUser] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState({});
+  const [savedUser, setSavedUser] =  useState(false)
+
+  const { usuarios, getUsuarios, addUsuario, usuario } = useContext(SistemaContext);
+
+  useEffect(() => {
+    getUsuarios().then().catch(null);
+  }, [savedUser]);
 
   const handleClose = () => {
     setOpen(false);
@@ -101,13 +68,20 @@ export default function UserList() {
     setOpen(true);
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
     setOpen(false);
-    alert(user);
+    let user = {
+      nombre: document.querySelector("#nombre-usuario").value,
+      apellidoPaterno: document.querySelector("#nombre-usuario").value,
+      apellidoMaterno: document.querySelector("#nombre-usuario").value,
+    };
+    await addUsuario(user).then().catch(null);
+    setSavedUser(true);
+    setSavedUser(false);
   };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "usuario", headerName: "Usuario", width: 250 },
+    { field: "nombre", headerName: "Nombre", width: 250 },
     { field: "apellidoPaterno", headerName: "ApellidoPaterno", width: 250 },
     { field: "apellidoMaterno", headerName: "Apellido Materno", width: 250 },
   ];
@@ -118,6 +92,8 @@ export default function UserList() {
 
   const classes = useStyles();
 
+ 
+
   return (
     <div style={{ height: 300, width: "100%" }}>
       <Grid container direction="row" justify="flex-end" alignItems="center">
@@ -127,7 +103,7 @@ export default function UserList() {
         </Button>
       </Grid>
       <DataGrid
-        rows={rows}
+        rows={usuarios}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -184,20 +160,6 @@ export default function UserList() {
                   </InputAdornment>
                 }
               />
-            </FormControl>
-            <FormControl className={classes.formControl} fullWidth={true}>
-              <InputLabel id="demo-simple-select-label">
-                Tipo usuario
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                onChange={handleChange}
-              >
-                <MenuItem value={"general"}>General</MenuItem>
-                <MenuItem value={"agentePagos"}>Agente de Pagos</MenuItem>
-                <MenuItem value={"Administrador"}>Administrador</MenuItem>
-              </Select>
             </FormControl>
           </div>
         </DialogContent>

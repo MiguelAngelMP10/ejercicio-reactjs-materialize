@@ -12,6 +12,8 @@ export default function SistemaProvider({ children }) {
   const [usuariosPagos, setUsuariosPagos] = useState([]);
   const [pagosPagados, setPagosPagados] = useState([]);
   const [pagosNoPagados, setPagosNoPagados] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [usuario, setUsuario] = useState({});
 
   const getLogin = async (username, password) => {
     try {
@@ -84,7 +86,6 @@ export default function SistemaProvider({ children }) {
       });
   };
 
-
   const getRecibos = async () => {
     axios
       .get("http://localhost:8081/recibos")
@@ -95,7 +96,6 @@ export default function SistemaProvider({ children }) {
         console.log(error);
       });
   };
-
 
   const getUsuariosPagos = async () => {
     axios
@@ -108,8 +108,6 @@ export default function SistemaProvider({ children }) {
       });
   };
 
-
-
   const getPagosPagodos = async () => {
     axios
       .get("http://localhost:8081/pagos/pagados")
@@ -121,7 +119,6 @@ export default function SistemaProvider({ children }) {
       });
   };
 
-
   const getPagosNoPagodos = async () => {
     axios
       .get("http://localhost:8081/pagos/no-pagados")
@@ -132,6 +129,36 @@ export default function SistemaProvider({ children }) {
         console.log(error);
       });
   };
+
+  const getUsuarios = async () => {
+    axios
+      .get("http://localhost:8082/usuarios")
+      .then(function (response) {
+        setUsuarios(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+
+  const addUsuario = async (info) => {
+    const params = new FormData();
+    for (let clave in info){
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+
+    axios
+      .post("http://localhost:8082/usuarios", params)
+      .then(function (response) {
+        setUsuario(response)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
   return (
     <SistemaContext.Provider
@@ -145,14 +172,18 @@ export default function SistemaProvider({ children }) {
         getSuscripciones,
         suscripciones,
         updateSucripciones,
-        recibos, 
+        recibos,
         getRecibos,
         usuariosPagos,
         getUsuariosPagos,
         pagosPagados,
         getPagosPagodos,
         pagosNoPagados,
-        getPagosNoPagodos 
+        getPagosNoPagodos,
+        usuarios,
+        getUsuarios,
+        addUsuario,
+        usuario
       }}
     >
       {children}
