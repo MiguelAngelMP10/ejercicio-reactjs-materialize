@@ -202,6 +202,27 @@ export default function SistemaProvider({ children }) {
       });
   };
 
+  const updateConcepto = async (id, info) => {
+    const params = new URLSearchParams();
+
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+    axios
+      .put(`http://localhost:8082/conceptos/${id}`, params)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+
+  
+
   return (
     <SistemaContext.Provider
       value={{
@@ -231,6 +252,7 @@ export default function SistemaProvider({ children }) {
         deleteConcepto,
         conceptos,
         concepto,
+        updateConcepto
       }}
     >
       {children}

@@ -53,10 +53,17 @@ function CustomPagination() {
 
 export default function ListConceptosPago() {
   const [openModalAgregar, setOpenModalAgregar] = useState(false);
+  const [openModalModificar, setOpenModalModificar] = useState(false);
+
   const [estatus, setEstatus] = useState(1);
   const [changes, setChanges] = useState(false);
-  const { getConceptos, conceptos, addConcepto, deleteConcepto } =
-    useContext(SistemaContext);
+  const {
+    getConceptos,
+    conceptos,
+    addConcepto,
+    deleteConcepto,
+    updateConcepto,
+  } = useContext(SistemaContext);
 
   const [openModalEliminar, setOpenModalEliminar] = useState(false);
   const [row, setRow] = useState({});
@@ -64,11 +71,11 @@ export default function ListConceptosPago() {
     getConceptos().then().catch(null);
   }, [changes]);
 
-
   const handleCloseModalEliminar = async () => {
     setOpenModalEliminar(false);
 
     await deleteConcepto(row.id).then().catch(null);
+    setChanges(true);
     setChanges(false);
   };
 
@@ -78,6 +85,14 @@ export default function ListConceptosPago() {
 
   const handleClickOpenModalAgregar = () => {
     setOpenModalAgregar(true);
+  };
+
+  const handleCloseModalModificar = () => {
+    setOpenModalModificar(false);
+  };
+
+  const handleClickOpenModalModificar = () => {
+    setOpenModalModificar(true);
   };
 
   const handleAddConcepto = async () => {
@@ -93,6 +108,18 @@ export default function ListConceptosPago() {
     setChanges(false);
   };
 
+  const handleUpdateConcepto = async () => {
+    setOpenModalModificar(false);
+    let concepto = {
+      concepto: document.querySelector("#nombre-concepto").value,
+      descripcion: document.querySelector("#descripcion").value,
+      estatus: estatus,
+    };
+
+    await updateConcepto(row.id, concepto).then().catch(null);
+    setChanges(true);
+    setChanges(false);
+  };
   const handleChange = (event) => {
     setEstatus(event.target.value);
   };
@@ -118,7 +145,7 @@ export default function ListConceptosPago() {
             color="secondary"
             onClick={() => {
               setOpenModalEliminar(true);
-              setRow(params.row)
+              setRow(params.row);
             }}
           >
             Eliminar
@@ -136,7 +163,8 @@ export default function ListConceptosPago() {
             variant="outlined"
             color="primary"
             onClick={() => {
-              // setOpen(true);
+              setOpenModalModificar(true);
+              setRow(params.row);
             }}
           >
             Modificar
@@ -250,6 +278,70 @@ export default function ListConceptosPago() {
           </Button>
           <Button onClick={handleCloseModalEliminar} color="primary">
             Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal para modificar  */}
+      <Dialog
+        onClose={handleCloseModalModificar}
+        aria-labelledby="customized-dialog-title"
+        open={openModalModificar}
+        fullWidth={true}
+      >
+        <DialogTitle
+          id="customized-dialog-title"
+          onClose={handleCloseModalModificar}
+        >
+          Modificar Concepto
+        </DialogTitle>
+        <DialogContent dividers>
+          <div>
+            <FormControl className={classes.margin} fullWidth={true}>
+              <InputLabel htmlFor="nombre-concepto">Nombre concepto</InputLabel>
+              <Input
+                id="nombre-concepto"
+                startAdornment={
+                  <InputAdornment position="start"></InputAdornment>
+                }
+                defaultValue={row.concepto}
+              />
+            </FormControl>
+            <FormControl className={classes.margin} fullWidth={true}>
+              <InputLabel htmlFor="descripcion">Descripcion</InputLabel>
+              <Input
+                id="descripcion"
+                startAdornment={
+                  <InputAdornment position="start"></InputAdornment>
+                }
+                defaultValue={row.descripcion}
+              />
+            </FormControl>
+
+            <FormControl className={classes.formControl} fullWidth={true}>
+              <InputLabel id="demo-simple-select-label">Estatus</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="estatus-select"
+                defaultValue={row.estatus}
+                onChange={handleChange}
+              >
+                <MenuItem value={"1"}>Activo</MenuItem>
+                <MenuItem value={"0"}>Inactivo</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={handleCloseModalModificar}
+            color="secondary"
+          >
+            Cerrar
+          </Button>
+          <Button autoFocus onClick={handleUpdateConcepto} color="primary">
+            Actualizar
           </Button>
         </DialogActions>
       </Dialog>
