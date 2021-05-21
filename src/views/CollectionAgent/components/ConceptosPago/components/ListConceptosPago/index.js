@@ -55,8 +55,22 @@ export default function ListConceptosPago() {
   const [openModalAgregar, setOpenModalAgregar] = useState(false);
   const [estatus, setEstatus] = useState(1);
   const [changes, setChanges] = useState(false);
+  const { getConceptos, conceptos, addConcepto, deleteConcepto } =
+    useContext(SistemaContext);
 
-  const { getConceptos, conceptos, addConcepto } = useContext(SistemaContext);
+  const [openModalEliminar, setOpenModalEliminar] = useState(false);
+  const [row, setRow] = useState({});
+  useEffect(() => {
+    getConceptos().then().catch(null);
+  }, [changes]);
+
+
+  const handleCloseModalEliminar = async () => {
+    setOpenModalEliminar(false);
+
+    await deleteConcepto(row.id).then().catch(null);
+    setChanges(false);
+  };
 
   const handleCloseModalAgregar = () => {
     setOpenModalAgregar(false);
@@ -66,7 +80,7 @@ export default function ListConceptosPago() {
     setOpenModalAgregar(true);
   };
 
-  const handleAddConcepto = async() => {
+  const handleAddConcepto = async () => {
     setOpenModalAgregar(false);
     let concepto = {
       concepto: document.querySelector("#nombre-concepto").value,
@@ -75,8 +89,8 @@ export default function ListConceptosPago() {
     };
 
     await addConcepto(concepto).then().catch(null);
-    setChanges(true)
-    setChanges(false)
+    setChanges(true);
+    setChanges(false);
   };
 
   const handleChange = (event) => {
@@ -90,7 +104,8 @@ export default function ListConceptosPago() {
       field: "estatus",
       headerName: "Estatus",
       width: 250,
-      renderCell: (params) => (Boolean(params.row.estatus) ? "Activo" : "Inactivo"),
+      renderCell: (params) =>
+        Boolean(params.row.estatus) ? "Activo" : "Inactivo",
     },
     {
       field: "eliminar",
@@ -102,7 +117,8 @@ export default function ListConceptosPago() {
             variant="outlined"
             color="secondary"
             onClick={() => {
-              //setOpen(true);
+              setOpenModalEliminar(true);
+              setRow(params.row)
             }}
           >
             Eliminar
@@ -129,11 +145,6 @@ export default function ListConceptosPago() {
       ),
     },
   ];
-
-
-  useEffect(() => {
-    getConceptos().then().catch(null);
-  }, [changes]);
 
   const classes = useStyles();
 
@@ -214,6 +225,31 @@ export default function ListConceptosPago() {
           <Button autoFocus onClick={handleAddConcepto} color="primary">
             <AddIcon></AddIcon>
             Agregar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal para confirmar eliminacion  */}
+      <Dialog
+        open={openModalEliminar}
+        onClose={handleCloseModalEliminar}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"¿Esta Seguro de eliminar este concepto?"}
+        </DialogTitle>
+
+        <DialogActions>
+          <Button
+            onClick={handleCloseModalEliminar}
+            color="secondary"
+            autoFocus
+          >
+            Cancelar
+          </Button>
+          <Button onClick={handleCloseModalEliminar} color="primary">
+            Eliminar
           </Button>
         </DialogActions>
       </Dialog>

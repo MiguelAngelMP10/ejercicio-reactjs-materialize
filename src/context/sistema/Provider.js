@@ -191,6 +191,17 @@ export default function SistemaProvider({ children }) {
       });
   };
 
+  const deleteConcepto = async (id) => {
+    axios
+      .delete(`http://localhost:8082/conceptos/${id}`)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <SistemaContext.Provider
       value={{
@@ -217,6 +228,7 @@ export default function SistemaProvider({ children }) {
         usuario,
         getConceptos,
         addConcepto,
+        deleteConcepto,
         conceptos,
         concepto,
       }}
