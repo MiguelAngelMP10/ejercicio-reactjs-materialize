@@ -21,6 +21,7 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import ListPagos from "./components/ListPagos";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -133,7 +134,7 @@ export default function PorUsuario() {
         <DialogContent dividers>
           <div>
             <FormControl className={classes.formControl}>
-              {listPagos(row.pagos)}
+              <ListPagos pagos={row.pagos}></ListPagos>
             </FormControl>
           </div>
         </DialogContent>
@@ -145,9 +146,4 @@ export default function PorUsuario() {
       </Dialog>
     </div>
   );
-}
-
-function listPagos(pagos) {
- 
-  //
 }

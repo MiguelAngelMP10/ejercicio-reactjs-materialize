@@ -1,13 +1,39 @@
-export default function ListPagos() {
-    return (
-        <List component="nav" aria-label="contacts">
-          {pagos?.forEach((element) => {
+import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import {Fragment} from 'react';
+
+export default function ListPagos({ pagos }) {
+  return (
+    <List component="nav" aria-label="contacts">
+      {pagos?.map((element, i) => {
         
-              <ListItem button>
-                <ListItemText primary={element} />
-              </ListItem>
+        return (
+          <ListItem button>
+            <ListItemText primary={
+            <Fragment>
+              <Typography
+                component="span"
+                variant="body2"
+                color="textPrimary"
+              >
+               {`${element.id} - ${element.concepto} - ${element.fechaVencimiento} - ${element.importe} - ${element.estatus}`} 
+              </Typography>
+            </Fragment>
+          }
             
-          })}
-        </List>
-      );
-} 
+            />
+          </ListItem>
+        );
+        // Return the element. Also pass key
+        //return <Answer key={answer} answer={answer} />;
+      })}
+    </List>
+  );
+}
+
+// {
+//   this.props.question.answers.map((answer, i) => {
+//     console.log("Entered");
+//     // Return the element. Also pass key
+//     return <Answer key={answer} answer={answer} />;
+//   });
+// }
