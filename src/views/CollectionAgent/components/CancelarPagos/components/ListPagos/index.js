@@ -12,10 +12,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
-  InputLabel,
 } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+
 import SistemaContext from "../../../../../../context/sistema";
 
 function CustomPagination() {
