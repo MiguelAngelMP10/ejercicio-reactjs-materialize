@@ -131,7 +131,7 @@ export default function ScrollableTabsButtonAuto() {
       </TabPanel>
       <TabPanel value={value} index={7}>
         <Typography variant="h3" component="h5">
-          Cancelar pagos
+          Cancelar pagos de Depositos
         </Typography>
         <CancelarPagos></CancelarPagos>
       </TabPanel>
