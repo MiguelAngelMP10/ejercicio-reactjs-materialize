@@ -22,6 +22,8 @@ export default function SistemaProvider({ children }) {
 
   const [pagosDeposito, setPagosDeposito] = useState([]);
 
+  const [pasarelas, setPasarelas] = useState([]);
+
   const getLogin = async (username, password) => {
     try {
       const params = new FormData();
@@ -309,6 +311,37 @@ export default function SistemaProvider({ children }) {
       });
   };
 
+  //Pasarelas
+  const getPasarelas = async () => {
+    axios
+      .get("http://localhost:8083/pasarelas")
+      .then(function (response) {
+        setPasarelas(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const addPasarela= async (info) => {
+    const params = new FormData();
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+
+    axios
+      .post("http://localhost:8083/pasarelas", params)
+      .then(function (response) {
+        console.log(response);
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <SistemaContext.Provider
       value={{
@@ -353,6 +386,10 @@ export default function SistemaProvider({ children }) {
         getPagosDeposito,
         pagosDeposito,
         updatePagoDeposito,
+
+        pasarelas,
+        getPasarelas,
+        addPasarela,
       }}
     >
       {children}

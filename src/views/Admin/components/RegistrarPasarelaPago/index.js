@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   DataGrid,
   GridToolbar,
@@ -19,10 +19,11 @@ import {
   InputLabel,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { AccountCircle } from "@material-ui/icons";
 import LockIcon from "@material-ui/icons/Lock";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import SistemaContext from "../../../../context/sistema";
+
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -35,30 +36,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
 }));
-const rows = [
-  {
-    id: 1,
-    pasarela: "Conecta",
-    clavePublica:
-      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    claveSecreta: "XCIATictiVERmA",
-  },
-
-  {
-    id: 6,
-    pasarela: "PayPal",
-    clavePublica:
-      "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bbchez",
-    claveSecreta: "XCIATictiVERmA",
-  },
-  {
-    id: 7,
-    pasarela: "OpenPay",
-    clavePublica:
-      "8e2ceecbcb5c7a306792a3104b9b249f16e36d70da1ed02c7ba948690a0819b3",
-    claveSecreta: "FuentXCIATictiVERmAes",
-  },
-];
 
 function CustomPagination() {
   const { state, apiRef } = useGridSlotComponentProps();
@@ -75,9 +52,14 @@ function CustomPagination() {
 }
 
 export default function RegistrarPasarelaPago() {
-  const [open, setOpen] = React.useState(false);
-  const [user, setUser] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [cambios, setcambios] = useState(false);
 
+  const { pasarelas, getPasarelas, addPasarela } = useContext(SistemaContext);
+
+  useEffect(() => {
+    getPasarelas().then().catch(null);
+  }, [cambios]);
   const handleClose = () => {
     setOpen(false);
   };
@@ -86,20 +68,24 @@ export default function RegistrarPasarelaPago() {
     setOpen(true);
   };
 
-  const handleAddUser = () => {
+  const handleAddPasarela = async () => {
     setOpen(false);
-    alert(user);
+    let info = {
+      nombrePasarela: document.querySelector("#nombre-pasarela").value,
+      clavePublica: document.querySelector("#clave-publica").value,
+      claveSecreta: document.querySelector("#clave-publica").value,
+    };
+    setcambios(false);
+    await addPasarela(info).then().catch(null);
+    setcambios(true);
   };
+
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "pasarela", headerName: "pasarela", width: 250 },
+    { field: "nombrePasarela", headerName: "pasarela", width: 250 },
     { field: "clavePublica", headerName: "Clave Publica", width: 250 },
     { field: "claveSecreta", headerName: "Clave Secreta", width: 250 },
   ];
-
-  const handleChange = (event) => {
-    setUser(event.target.value);
-  };
 
   const classes = useStyles();
 
@@ -112,7 +98,7 @@ export default function RegistrarPasarelaPago() {
         </Button>
       </Grid>
       <DataGrid
-        rows={rows}
+        rows={pasarelas}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -126,14 +112,14 @@ export default function RegistrarPasarelaPago() {
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        fullWidth={true}
+        fullWidth
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Agregar pasarela
         </DialogTitle>
         <DialogContent dividers>
           <div>
-            <FormControl className={classes.margin} fullWidth={true}>
+            <FormControl className={classes.margin} fullWidth>
               <InputLabel htmlFor="nombre-pasarela">Nombre pasarela</InputLabel>
               <Input
                 id="nombre-pasarela"
@@ -144,7 +130,7 @@ export default function RegistrarPasarelaPago() {
                 }
               />
             </FormControl>
-            <FormControl className={classes.margin} fullWidth={true}>
+            <FormControl className={classes.margin} fullWidth>
               <InputLabel htmlFor="clave-publica">Clave Publica</InputLabel>
               <Input
                 id="clave-publica"
@@ -155,7 +141,7 @@ export default function RegistrarPasarelaPago() {
                 }
               />
             </FormControl>
-            <FormControl className={classes.margin} fullWidth={true}>
+            <FormControl className={classes.margin} fullWidth>
               <InputLabel htmlFor="clave-secreta">Clave Secreta</InputLabel>
               <Input
                 id="clave-secreta"
@@ -168,7 +154,7 @@ export default function RegistrarPasarelaPago() {
             </FormControl>
             <FormControl
               className={classes.formControl}
-              fullWidth={true}
+              fullWidth
             ></FormControl>
           </div>
         </DialogContent>
@@ -176,7 +162,7 @@ export default function RegistrarPasarelaPago() {
           <Button autoFocus onClick={handleClose} color="secondary">
             Cerrar
           </Button>
-          <Button autoFocus onClick={handleAddUser} color="primary">
+          <Button autoFocus onClick={handleAddPasarela} color="primary">
             <AccountBalanceIcon />
             Agregar
           </Button>
