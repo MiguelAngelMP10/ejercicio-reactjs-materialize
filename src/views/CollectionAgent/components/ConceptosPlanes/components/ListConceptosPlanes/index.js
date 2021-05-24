@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   DataGrid,
   GridToolbar,
@@ -13,7 +13,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  Grid,
   Input,
   InputAdornment,
   InputLabel,
@@ -21,6 +20,8 @@ import {
   Select,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import SistemaContext from "../../.././../../../context/sistema";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -65,8 +66,14 @@ function CustomPagination() {
 }
 
 export default function ListConceptosPlanes() {
-  const [open, setOpen] = React.useState(false);
-  const [user, setUser] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [row, setRow] = useState({});
+  const [plan, setPlan] = useState(null);
+  const { getConceptos, conceptos } = useContext(SistemaContext);
+
+  useEffect(() => {
+    getConceptos().then().catch(null);
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -76,15 +83,35 @@ export default function ListConceptosPlanes() {
     setOpen(true);
   };
 
-  const handleAddUser = () => {
+  const handleAddPlanConcepto = () => {
+    const params = new FormData();
+
+    params.append("idConcepto", row.id);
+    params.append("plan", plan);
+
+    axios
+      .post("http://localhost:8082/conceptos-planes", params)
+      .then(function (response) {
+        alert("Se Agrego la asociación")
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     setOpen(false);
-    alert(user);
   };
+
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "concepto", headerName: "Conceptos", width: 250 },
     { field: "descripcion", headerName: "Descripcion", width: 250 },
-    { field: "estatus", headerName: "Estatus", width: 250 },
+    {
+      field: "estatus",
+      headerName: "Estatus",
+      width: 250,
+      renderCell: (params) => (
+        <strong>{Boolean(params.row.estatus) ? "Activo" : "inactivo"}</strong>
+      ),
+    },
     {
       field: "asociarPlan",
       headerName: "Asociar Plan",
@@ -95,6 +122,7 @@ export default function ListConceptosPlanes() {
             variant="outlined"
             color="secondary"
             onClick={() => {
+              setRow(params.row);
               setOpen(true);
             }}
           >
@@ -106,7 +134,7 @@ export default function ListConceptosPlanes() {
   ];
 
   const handleChange = (event) => {
-    setUser(event.target.value);
+    setPlan(event.target.value);
   };
 
   const classes = useStyles();
@@ -114,7 +142,7 @@ export default function ListConceptosPlanes() {
   return (
     <div style={{ height: 300, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={conceptos}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -140,7 +168,7 @@ export default function ListConceptosPlanes() {
               <Input
                 id="nombre-concepto"
                 disabled
-                value="concepto 1"
+                value={row.concepto}
                 startAdornment={
                   <InputAdornment position="start"></InputAdornment>
                 }
@@ -151,7 +179,7 @@ export default function ListConceptosPlanes() {
               <Input
                 id="descripcion"
                 disabled
-                value="descripcion concepto"
+                value={row.descripcion}
                 startAdornment={
                   <InputAdornment position="start"></InputAdornment>
                 }
@@ -165,11 +193,11 @@ export default function ListConceptosPlanes() {
                 id="demo-simple-select"
                 onChange={handleChange}
               >
-                <MenuItem value={"1mes"}>1 mes</MenuItem>
-                <MenuItem value={"3meses"}>3 Meses</MenuItem>
-                <MenuItem value={"6meses"}>6 meses</MenuItem>
-                <MenuItem value={"9meses"}>9 meses</MenuItem>
-                <MenuItem value={"12meses"}>12 meses</MenuItem>
+                <MenuItem value={"1 mes"}>1 mes</MenuItem>
+                <MenuItem value={"3 meses"}>3 Meses</MenuItem>
+                <MenuItem value={"6 meses"}>6 meses</MenuItem>
+                <MenuItem value={"9 meses"}>9 meses</MenuItem>
+                <MenuItem value={"12 meses"}>12 meses</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -178,7 +206,7 @@ export default function ListConceptosPlanes() {
           <Button autoFocus onClick={handleClose} color="secondary">
             Cerrar
           </Button>
-          <Button autoFocus onClick={handleAddUser} color="primary">
+          <Button autoFocus onClick={handleAddPlanConcepto} color="primary">
             <AddIcon></AddIcon>
             Asociar
           </Button>
