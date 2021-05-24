@@ -20,6 +20,8 @@ export default function SistemaProvider({ children }) {
   const [penalizaciones, setPenalizaciones] = useState([]);
   const [penalizacion, setPenalizacion] = useState({});
 
+  const [pagosDeposito, setPagosDeposito] = useState([]);
+
   const getLogin = async (username, password) => {
     try {
       const params = new FormData();
@@ -282,15 +284,42 @@ export default function SistemaProvider({ children }) {
       });
   };
 
+  //pagos_deposito
+  const getPagosDeposito = async () => {
+    axios
+      .get("http://localhost:8082/pagos-deposito")
+      .then(function (response) {
+        setPagosDeposito(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const updatePagoDeposito = async (id, estatus) => {
+    const params = new URLSearchParams();
+    params.append("estatus", estatus);
+    axios
+      .put("http://localhost:8082/pagos-deposito/" + id, params)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <SistemaContext.Provider
       value={{
         login,
         token,
         getLogin,
+
         pagos,
         getPagos,
         updatePago,
+
         getSuscripciones,
         suscripciones,
         updateSucripciones,
@@ -306,7 +335,7 @@ export default function SistemaProvider({ children }) {
         getUsuarios,
         addUsuario,
         usuario,
-        
+
         getConceptos,
         addConcepto,
         deleteConcepto,
@@ -320,6 +349,10 @@ export default function SistemaProvider({ children }) {
         updatepenalizaciones,
         penalizaciones,
         penalizacion,
+
+        getPagosDeposito,
+        pagosDeposito,
+        updatePagoDeposito,
       }}
     >
       {children}

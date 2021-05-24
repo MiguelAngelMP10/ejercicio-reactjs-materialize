@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   DataGrid,
   GridToolbar,
@@ -12,14 +12,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
   FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Select,
   Switch,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import SistemaContext from "../../../../../../context/sistema";
+import { set } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -30,84 +28,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
 }));
-const rows = [
-  {
-    id: 1,
-    usuario: "Miguel Angel Muñoz Pozos",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "NO pagado",
-  },
-  {
-    id: 2,
-    usuario: "Miguel Angel Muñoz Pozos",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "No pagado",
-  },
-  {
-    id: 3,
-    usuario: "Angel Muñoz Pozos",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "NO pagado",
-  },
-  {
-    id: 4,
-    usuario: "Miguel Angel Muñoz Pozos",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "No pagado",
-  },
-  {
-    id: 5,
-    usuario: "Miguel Angel Muñoz Pozos",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "No pagado",
-  },
-  {
-    id: 6,
-    usuario: "Miguel Angel ",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "No pagado",
-  },
-  {
-    id: 7,
-    usuario: "Jorge",
-  },
-  {
-    id: 8,
-    usuario: "Ara",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "No pagado",
-  },
-  {
-    id: 9,
-    usuario: "Pedro Cruz",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "NO pagado",
-  },
-  {
-    id: 10,
-    usuario: "Miguel Angel Marquez",
-    importe: "$250.00",
-    interes: "$0.0",
-    saldos: "$0.0",
-    estatus: "No pagado",
-  },
-];
 
 function CustomPagination() {
   const { state, apiRef } = useGridSlotComponentProps();
@@ -124,23 +44,18 @@ function CustomPagination() {
 }
 
 export default function Pagos() {
-  const [open, setOpen] = React.useState(false);
-  const [metodoPago, setMetodoPago] = React.useState("");
-  const [state, setState] = React.useState({
-    checkedA: false,
-  });
+  const [open, setOpen] = useState(false);
+  const [checkedA, setCheckedA] = useState(false);
+  const [row, setRow] = useState({});
+  const [cambio, setCambio] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handlePay = () => {
-    setOpen(false);
-    alert("Pagado con " + state.checkedA);
-  };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "usuario", headerName: "Usuario", width: 270 },
+    { field: "concepto", headerName: "concepto", width: 270 },
     {
       field: "importe",
       headerName: "Importe",
@@ -175,6 +90,8 @@ export default function Pagos() {
             variant="outlined"
             color="secondary"
             onClick={() => {
+              setRow(params.row);
+              setCheckedA(params.row.estatus === "Aprobado" ? true : false);
               setOpen(true);
             }}
           >
@@ -185,20 +102,32 @@ export default function Pagos() {
     },
   ];
 
-  const handleChange = (event) => {
-    setMetodoPago(event.target.value);
-  };
-
   const classes = useStyles();
 
   const handleChangeCheckBox = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    setCheckedA(event.target.checked);
   };
+
+  const { pagosDeposito, getPagosDeposito, updatePagoDeposito } =
+    useContext(SistemaContext);
+
+  const updatePagoDepositoLocal = async () => {
+    setOpen(false);
+    setCambio(false);
+    await updatePagoDeposito(row.id, checkedA ? "Aprobado" : "No Aprobado")
+      .then()
+      .catch(null);
+    setCambio(true);
+  };
+
+  useEffect(() => {
+    getPagosDeposito().then().catch(null);
+  }, [cambio]);
 
   return (
     <div style={{ height: 300, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={pagosDeposito}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -215,18 +144,13 @@ export default function Pagos() {
         fullWidth={true}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Pago de : "Miguel Angel Muñoz Pozos",
+          Concepto por pagar {row.concepto}
         </DialogTitle>
         <DialogContent dividers>
-          <div>
-            <FormControl className={classes.formControl} fullWidth={true}>
-              {handleMetodos(metodoPago)}
-            </FormControl>
-          </div>
           <FormControlLabel
             control={
               <Switch
-                checked={state.checkedA}
+                checked={checkedA}
                 onChange={handleChangeCheckBox}
                 name="checkedA"
                 color="primary"
@@ -239,23 +163,11 @@ export default function Pagos() {
           <Button autoFocus onClick={handleClose} color="secondary">
             Cerrar
           </Button>
-          <Button autoFocus onClick={handlePay} color="primary">
+          <Button autoFocus onClick={updatePagoDepositoLocal} color="primary">
             Guardar
           </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
-}
-
-function handleMetodos(metodoPago) {
-  switch (metodoPago) {
-    case "Efectivo":
-      return;
-    case "Trasferencia":
-      return "";
-    case "PasarelaPago":
-      return "";
-    default:
-  }
 }
