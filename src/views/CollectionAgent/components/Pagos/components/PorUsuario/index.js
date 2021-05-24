@@ -16,9 +16,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  List,
-  ListItem,
-  ListItemText,
+
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import ListPagos from "./components/ListPagos";

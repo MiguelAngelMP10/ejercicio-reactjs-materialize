@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   DataGrid,
   GridToolbar,
@@ -24,19 +24,14 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { AccountCircle } from "@material-ui/icons";
 
 import { KeyboardDatePicker } from "@material-ui/pickers";
+import SistemaContext from "../../../../../../context/sistema";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 122,
+    minWidth: 120,
   },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-
   chips: {
     display: "flex",
     flexWrap: "wrap",
@@ -48,46 +43,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
   },
 }));
-
-const rows = [
-  {
-    id: 1,
-    usuario: "Miguel Angel",
-    apellidoPaterno: "Muñoz",
-    apellidoMaterno: "Pozos",
-  },
-
-  {
-    id: 6,
-    usuario: "Miguel ",
-    apellidoPaterno: "sanchez",
-    apellidoMaterno: "",
-  },
-  {
-    id: 7,
-    usuario: "Jorge",
-    apellidoPaterno: "Cortez",
-    apellidoMaterno: "Fuentes",
-  },
-  {
-    id: 8,
-    usuario: "Ara",
-    apellidoPaterno: "Nava",
-    apellidoMaterno: "",
-  },
-  {
-    id: 9,
-    usuario: "Pedro",
-    apellidoPaterno: "Cruz",
-    apellidoMaterno: "",
-  },
-  {
-    id: 10,
-    usuario: "Miguel Angel",
-    apellidoPaterno: "Marquez",
-    apellidoMaterno: "",
-  },
-];
 
 function CustomPagination() {
   const { state, apiRef } = useGridSlotComponentProps();
@@ -102,56 +57,72 @@ function CustomPagination() {
     />
   );
 }
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 500,
+      width: 250,
     },
   },
 };
 
-const conceptos = ["Inscripción", "mensualidad "];
-
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 export default function UsuarioConceptos() {
-  const [open, setOpen] = React.useState(false);
-  const [user, setUser] = React.useState("");
+  const [open, setOpen] = useState(false);
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+  const [conceptoLocal, setConceptoLocal] = useState([]);
+  const [selectedDateStart, setSelectedDateStart] = useState(new Date());
+  const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
 
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const { usuarios, getUsuarios, getConceptos, conceptos } =
+    useContext(SistemaContext);
+  const [row, setRow] = useState({});
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const handleDateChangeStart = (date) => {
+    setSelectedDateStart(date);
+  };
+
+  const handleDateChangeEnd = (date) => {
+    setSelectedDateEnd(date);
   };
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
+    setConceptoLocal(event.target.value);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleAddUser = () => {
+  const handleAddConceptos = () => {
+    let info = {
+      idUsuario: row.id,
+      conceptos: conceptoLocal,
+      start: selectedDateStart.toISOString().split("T")[0],
+      end: selectedDateEnd.toISOString().split("T")[0],
+    };
+
+    const params = new FormData();
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+
+    axios
+      .post("http://localhost:8082/usuario-cobros/add-cobros", params)
+      .then(function (response) {
+        alert("Se asignarón los cobros al usuario")
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     setOpen(false);
-    alert(user);
   };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "usuario", headerName: "Usuario", width: 250 },
+    { field: "nombre", headerName: "nombre", width: 250 },
     { field: "apellidoPaterno", headerName: "ApellidoPaterno", width: 250 },
     { field: "apellidoMaterno", headerName: "Apellido Materno", width: 250 },
     {
@@ -164,7 +135,9 @@ export default function UsuarioConceptos() {
             variant="outlined"
             color="primary"
             onClick={() => {
+              console.log(conceptos);
               setOpen(true);
+              setRow(params.row);
             }}
           >
             Asignar concepto
@@ -176,10 +149,15 @@ export default function UsuarioConceptos() {
 
   const classes = useStyles();
 
+  useEffect(() => {
+    getUsuarios().then().catch(null);
+    getConceptos().then().catch(null);
+  }, []);
+
   return (
     <div style={{ height: 300, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={usuarios}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10, 50]}
@@ -193,19 +171,19 @@ export default function UsuarioConceptos() {
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        fullWidth={true}
+        fullWidth
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Agregar conceptos a Usuario
         </DialogTitle>
         <DialogContent dividers>
           <div>
-            <FormControl className={classes.margin} fullWidth={true}>
+            <FormControl className={classes.margin} fullWidth>
               <InputLabel htmlFor="nombre-usuario">Nombre usuario</InputLabel>
               <Input
                 id="nombre-usuario"
                 disabled
-                value="Miguel Angel"
+                value={row.nombre}
                 startAdornment={
                   <InputAdornment position="start">
                     <AccountCircle />
@@ -213,14 +191,14 @@ export default function UsuarioConceptos() {
                 }
               />
             </FormControl>
-            <FormControl className={classes.margin} fullWidth={true}>
+            <FormControl className={classes.margin} fullWidth>
               <InputLabel htmlFor="apellido-paterno-usuario">
                 Apellido Paterno Usuario
               </InputLabel>
               <Input
                 id="apellido-paterno-usuario"
                 disabled
-                value="Pozos"
+                value={row.apellidoPaterno}
                 startAdornment={
                   <InputAdornment position="start">
                     <AccountCircle />
@@ -228,14 +206,14 @@ export default function UsuarioConceptos() {
                 }
               />
             </FormControl>
-            <FormControl className={classes.margin} fullWidth={true}>
+            <FormControl className={classes.margin} fullWidth>
               <InputLabel htmlFor="apellido-materno-usuario">
                 Apellido Materno Usuario
               </InputLabel>
               <Input
                 id="apellido-materno-usuario"
                 disabled
-                value="Muñoz"
+                value={row.apellidoMaterno}
                 startAdornment={
                   <InputAdornment position="start">
                     <AccountCircle />
@@ -243,18 +221,15 @@ export default function UsuarioConceptos() {
                 }
               />
             </FormControl>
-
-            <FormControl className={classes.formControl} fullWidth={true}>
-              <InputLabel id="demo-mutiple-conceptos-label">
-                Conceptos
-              </InputLabel>
+            <FormControl className={classes.formControl} fullWidth>
+              <InputLabel id="demo-mutiple-chip-label">Conceptos</InputLabel>
               <Select
-                labelId="demo-mutiple-conceptos-label"
-                id="demo-mutiple-conceptos"
+                labelId="demo-mutiple-chip-label"
+                id="demo-mutiple-chip"
                 multiple
-                value={personName}
+                value={conceptoLocal}
                 onChange={handleChange}
-                input={<Input id="select-multiple-conceptos" />}
+                input={<Input id="select-multiple-chip" />}
                 renderValue={(selected) => (
                   <div className={classes.chips}>
                     {selected.map((value) => (
@@ -268,39 +243,36 @@ export default function UsuarioConceptos() {
                 )}
                 MenuProps={MenuProps}
               >
-                {conceptos.map((name) => (
-                  <MenuItem
-                    key={name}
-                    value={name}
-                    style={getStyles(name, personName, theme)}
-                  >
-                    {name}
+                {conceptos.map((fila) => (
+                  <MenuItem key={fila.id} value={fila.id}>
+                    {fila.concepto}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-
             <KeyboardDatePicker
               margin="normal"
-              id="date-picker-dialog"
+              id="date-picker-dialo"
               label="Fecha Inicio"
-              format="MM/dd/yyyy"
-              value={selectedDate}
-              onChange={handleDateChange}
+              format="yyyy/MM/dd"
+              value={selectedDateStart}
+              onChange={handleDateChangeStart}
               KeyboardButtonProps={{
                 "aria-label": "change date",
               }}
+              fullWidth
             />
             <KeyboardDatePicker
               margin="normal"
               id="date-picker-dialog"
               label="fecha fin"
-              format="MM/dd/yyyy"
-              value={selectedDate}
-              onChange={handleDateChange}
+              format="yyyy/MM/dd"
+              value={selectedDateEnd}
+              onChange={handleDateChangeEnd}
               KeyboardButtonProps={{
                 "aria-label": "change date",
               }}
+              fullWidth
             />
           </div>
         </DialogContent>
@@ -308,7 +280,7 @@ export default function UsuarioConceptos() {
           <Button autoFocus onClick={handleClose} color="secondary">
             Cerrar
           </Button>
-          <Button autoFocus onClick={handleAddUser} color="primary">
+          <Button autoFocus onClick={handleAddConceptos} color="primary">
             <PersonAddIcon></PersonAddIcon>
             Agregar conceptos
           </Button>
