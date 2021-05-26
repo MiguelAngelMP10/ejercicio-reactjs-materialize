@@ -8,12 +8,15 @@ export default function AcercaDeYNosotros() {
     getDatosGenerales().then().catch(null);
   }, []);
 
-  const handleUpdateDatosGenerales = async () => {
-    console.log("click");
-    let info = { acercaDe: document.querySelector("#outlined-multiline-flexible-acercade").innerHTML, nosotros: document.querySelector("#outlined-multiline-flexible-nosotros").innerHTML };
+  const [acercaDe, setAcercaDe] = useState("");
+  const [nosotros, setNosotros] = useState("");
 
-    let respuesta  = await updateDatosGenerales(1, info).then().catch(null);
-    console.log(respuesta);
+  const handleUpdateDatosGenerales = async () => {
+    let info = {
+      acercaDe: acercaDe,
+      nosotros: nosotros,
+    };
+    await updateDatosGenerales(1, info).then(console.log).catch(null);
   };
 
   return (
@@ -27,6 +30,7 @@ export default function AcercaDeYNosotros() {
         variant="outlined"
         style={{ marginTop: "20px" }}
         defaultValue={datosGenerales.acercaDe}
+        onChange={(event) => setAcercaDe(event.target.value)}
       />
 
       <TextField
@@ -38,6 +42,7 @@ export default function AcercaDeYNosotros() {
         variant="outlined"
         style={{ marginTop: "20px" }}
         defaultValue={datosGenerales.nosotros}
+        onChange={(event) => setNosotros(event.target.value)}
       />
       <Button
         variant="contained"

@@ -367,7 +367,7 @@ export default function SistemaProvider({ children }) {
     axios
       .put("http://localhost:8083/datos-generales/" + id, params)
       .then(function (response) {
-        return response;
+        setDatosGenerales(response.data);
       })
       .catch(function (error) {
         console.log(error);
