@@ -24,6 +24,8 @@ export default function SistemaProvider({ children }) {
 
   const [pasarelas, setPasarelas] = useState([]);
 
+  const [datosGenerales, setDatosGenerales] = useState({});
+
   const getLogin = async (username, password) => {
     try {
       const params = new FormData();
@@ -323,7 +325,7 @@ export default function SistemaProvider({ children }) {
       });
   };
 
-  const addPasarela= async (info) => {
+  const addPasarela = async (info) => {
     const params = new FormData();
     for (let clave in info) {
       if (info.hasOwnProperty(clave)) {
@@ -335,6 +337,36 @@ export default function SistemaProvider({ children }) {
       .post("http://localhost:8083/pasarelas", params)
       .then(function (response) {
         console.log(response);
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  //Datos generales
+  const getDatosGenerales = async () => {
+    axios
+      .get("http://localhost:8083/datos-generales/1")
+      .then(function (response) {
+        setDatosGenerales(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const updateDatosGenerales = async (id, info) => {
+    const params = new URLSearchParams();
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+    
+    axios
+      .put("http://localhost:8083/datos-generales/" + id, params)
+      .then(function (response) {
         return response;
       })
       .catch(function (error) {
@@ -390,6 +422,10 @@ export default function SistemaProvider({ children }) {
         pasarelas,
         getPasarelas,
         addPasarela,
+
+        getDatosGenerales,
+        updateDatosGenerales,
+        datosGenerales,
       }}
     >
       {children}
