@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 import FourOFour from "../views/FourOFour";
 import Home from "../views/Home";
 import Login from "../views/Login";
@@ -8,6 +13,7 @@ import CollectionAgent from "../views/CollectionAgent";
 import Admin from "../views/Admin";
 import { useContext } from "react";
 import SistemaContext from "../context/sistema";
+import Footer from "../components/Footer";
 
 export default function Routes() {
   const { login } = useContext(SistemaContext);
@@ -16,24 +22,25 @@ export default function Routes() {
       <Menu></Menu>
       <Switch>
         <Route path="/" exact>
-        {!login ? <Redirect to="/login" /> : <Home/>}
+          {!login ? <Redirect to="/login" /> : <Home />}
         </Route>
         <Route path="/login" exact>
-        {login ? <Redirect to="/" /> : <Login/>}
+          {login ? <Redirect to="/" /> : <Login />}
         </Route>
         <Route path="/general-user" exact>
-        {!login ? <Redirect to="/login" /> : <GeneralUser/>}
+          {!login ? <Redirect to="/login" /> : <GeneralUser />}
         </Route>
         <Route path="/collection-agent" exact>
-        {!login ? <Redirect to="/login" /> : <CollectionAgent/>}
+          {!login ? <Redirect to="/login" /> : <CollectionAgent />}
         </Route>
         <Route path="/admin" exact>
-        {!login ? <Redirect to="/login" /> : <Admin/>}
+          {!login ? <Redirect to="/login" /> : <Admin />}
         </Route>
         <Route>
           <FourOFour></FourOFour>
         </Route>
       </Switch>
+      <Footer></Footer>
     </Router>
   );
 }

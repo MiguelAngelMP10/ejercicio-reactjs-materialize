@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useContext, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Card from "@material-ui/core/Card";
@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { red } from "@material-ui/core/colors";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Container, Grid, Link } from "@material-ui/core";
+import SistemaContext from "../../context/sistema";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,8 +47,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Footer() {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
-  const [expanded2, setExpanded2] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [expanded2, setExpanded2] = useState(false);
+
+  const { getDatosGenerales, datosGenerales } = useContext(SistemaContext);
+  useEffect(() => {
+    getDatosGenerales().then().catch(null);
+  }, []);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -55,7 +61,7 @@ export default function Footer() {
   const handleExpandClick2 = () => {
     setExpanded2(!expanded2);
   };
-  
+
   return (
     <footer className={classes.footer}>
       <Container>
@@ -80,7 +86,7 @@ export default function Footer() {
                 </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                   <CardContent>
-                    <Typography paragraph></Typography>
+                    <Typography paragraph>{datosGenerales.acercaDe}</Typography>
                   </CardContent>
                 </Collapse>
               </Card>
@@ -104,7 +110,7 @@ export default function Footer() {
                 </CardActions>
                 <Collapse in={expanded2} timeout="auto" unmountOnExit>
                   <CardContent>
-                    <Typography paragraph></Typography>
+                    <Typography paragraph>{datosGenerales.nosotros}</Typography>
                   </CardContent>
                 </Collapse>
               </Card>
