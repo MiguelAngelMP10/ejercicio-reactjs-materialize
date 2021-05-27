@@ -1,61 +1,69 @@
 import { useContext, useState } from "react";
 
-import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
+import PropTypes from "prop-types";
+import AppBar from "@material-ui/core/AppBar";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Drawer from "@material-ui/core/Drawer";
+import Hidden from "@material-ui/core/Hidden";
+import IconButton from "@material-ui/core/IconButton";
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 
-import MenuIcon from '@material-ui/icons/Menu';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import MenuIcon from "@material-ui/icons/Menu";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import SistemaContext from "../../context/sistema";
 import { Link } from "react-router-dom";
 
-import HomeIcon from '@material-ui/icons/Home';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import PersonIcon from '@material-ui/icons/Person';
-import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import HomeIcon from "@material-ui/icons/Home";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
+import PersonIcon from "@material-ui/icons/Person";
+import PermContactCalendarIcon from "@material-ui/icons/PermContactCalendar";
+import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 const drawerWidth = 160;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: "flex",
   },
   drawer: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
       flexShrink: 0,
     },
   },
   appBar: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
   },
   menuButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
     },
   },
   // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
+  toolbar:theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
   },
   content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
+
+ 
   },
+  menuItem: {
+    color: "black",
+    textDecoration: "none",
+    fontSize: 13,
+    display: "flex",
+    alignItems: "center",
+  },
+  menu:{ padding: "100" }
 }));
 
 function ResponsiveDrawer(props) {
@@ -74,60 +82,62 @@ function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
 
       <List>
-          {!login ?( 
+        {!login ? (
           <ListItem button key={"Login"}>
-            <ListItemIcon>
+            <ListItemIcon style={{ fontSize: 40 }}>
               <LockOpenIcon />
-              <Link to="/login" className={classes.itemLink}>
+              <Link to="/login" className={classes.menuItem}>
                 {"Login"}
               </Link>
             </ListItemIcon>
-          </ListItem>): (
-            ""
-          )}
-          {login ? (
-            <>
-              <ListItem button key={"home"}>
-                <ListItemIcon>
-                  <HomeIcon />
-                  <Link to="/" className={classes.itemLink}>
-                    {"home"}
-                  </Link>
-                </ListItemIcon>
-              </ListItem>
-              <ListItem button key={"general-user"}>
-                <ListItemIcon>
-                  <PersonIcon />
-                  <Link to="/general-user" className={classes.itemLink}>
-                    {"Usuario General"}
-                  </Link>
-                </ListItemIcon>
-              </ListItem>
-              <ListItem button key={"collection-agent"}>
-                <ListItemIcon>
-                  <PermContactCalendarIcon />
-                  <Link to="/collection-agent" className={classes.itemLink}>
-                    {"Agente de cobro"}
-                  </Link>
-                </ListItemIcon>
-              </ListItem>
-              <ListItem button key={"admin"}>
-                <ListItemIcon>
-                  <SupervisorAccountIcon />
-                  <Link to="/admin" className={classes.itemLink}>
-                    {"Admin"}
-                  </Link>
-                </ListItemIcon>
-              </ListItem>
-            </>
-          ) : (
-            ""
-          )}
-        </List>
+          </ListItem>
+        ) : (
+          ""
+        )}
+        {login ? (
+          <>
+            <ListItem button key={"home"}>
+              <ListItemIcon>
+                <HomeIcon style={{ fontSize: 40 }} />
+                <Link to="/" className={classes.menuItem}>
+                  {"Home"}
+                </Link>
+              </ListItemIcon>
+            </ListItem>
+            <ListItem button key={"general-user"}>
+              <ListItemIcon>
+                <PersonIcon style={{ fontSize: 40 }} />
+                <Link to="/general-user" className={classes.menuItem}>
+                  {"Usuario General"}
+                </Link>
+              </ListItemIcon>
+            </ListItem>
+            <ListItem button key={"collection-agent"}>
+              <ListItemIcon>
+                <PermContactCalendarIcon style={{ fontSize: 40 }} />
+                <Link to="/collection-agent" className={classes.menuItem}>
+                  {"Agente de cobro"}
+                </Link>
+              </ListItemIcon>
+            </ListItem>
+            <ListItem button key={"admin"}>
+              <ListItemIcon>
+                <SupervisorAccountIcon style={{ fontSize: 40 }} />
+                <Link to="/admin" className={classes.menuItem}>
+                  {"Admin"}
+                </Link>
+              </ListItemIcon>
+            </ListItem>
+          </>
+        ) : (
+          ""
+        )}
+      </List>
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <div className={classes.root}>
@@ -154,7 +164,7 @@ function ResponsiveDrawer(props) {
           <Drawer
             container={container}
             variant="temporary"
-            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            anchor={theme.direction === "rtl" ? "right" : "left"}
             open={mobileOpen}
             onClose={handleDrawerToggle}
             classes={{

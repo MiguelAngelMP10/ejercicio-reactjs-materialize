@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, Typography } from "@material-ui/core";
 import { useState } from "react";
-import { GithubPicker, CompactPicker } from "react-color";
+import { GithubPicker, CirclePicker, SwatchesPicker  } from "react-color";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -15,29 +15,29 @@ const useStyles = makeStyles((theme) => ({
     width: "25ch",
   },
 }));
-function color(th) {
+function colorPrimario(th) {
   console.log(th);
 }
 
-function colorLetra(th) {
+function colorSecundario(th) {
   console.log("Letra", th);
 }
 export default function ColoresSistema() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div>
       <InputLabel htmlFor="color-fondo" className={classes.textField}>
-        Color fondo
+        Color primario
       </InputLabel>
-      <FormControl fullWidth={true}>
-        <GithubPicker onChange={color} />
+      <FormControl fullWidth>
+        <SwatchesPicker  onChange={colorPrimario} />
       </FormControl>
       <InputLabel htmlFor="color-fondo" className={classes.textField}>
-        Color letra
+        Color secundario
       </InputLabel>
-      <FormControl fullWidth={true}>
-        <CompactPicker onChange={colorLetra} />
+      <FormControl fullWidth>
+        <CirclePicker  onChange={colorSecundario} />
       </FormControl>
     </div>
   );

@@ -5,18 +5,35 @@ import "./App.css";
 
 import Routes from "./routes";
 import SistemaProvider from "./context/sistema/Provider";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+
 
 function App() {
+
+  const outerTheme = createMuiTheme({
+    palette: {
+      type: 'light',
+      primary: {
+        main: "#33c9dc",
+      },
+      secondary: {
+        main: "#7e57c2",
+      },    
+    },
+  });
+  
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <div className="App">
-        <Container>
-          <SistemaProvider>
-            <Routes></Routes>
-          </SistemaProvider>
-        </Container>
-      </div>
-    </MuiPickersUtilsProvider>
+    <ThemeProvider theme={outerTheme}>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <div className="App">
+          <Container>
+            <SistemaProvider>
+              <Routes></Routes>
+            </SistemaProvider>
+          </Container>
+        </div>
+      </MuiPickersUtilsProvider>
+    </ThemeProvider>
   );
 }
 
