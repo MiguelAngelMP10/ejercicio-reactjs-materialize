@@ -14,11 +14,32 @@ function App() {
     palette: {
       type: 'light',
       primary: {
-        main: "#33c9dc",
+        main: '#3f51b5',
       },
       secondary: {
-        main: "#7e57c2",
-      },    
+        main: '#f50057',
+      },
+      background: {
+        paper: '#eeeeee',
+        default: '#f5f5f5',
+      },
+    },
+    typography: {
+      fontSize: 14,
+      fontWeightLight: 200,
+    },
+    props: {
+      MuiList: {
+        dense: true,
+      },
+      MuiMenuItem: {
+        dense: true,
+      },
+      MuiTable: {
+        size: 'small',
+      },
+
+      
     },
   });
   

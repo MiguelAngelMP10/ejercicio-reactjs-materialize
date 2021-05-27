@@ -23,6 +23,8 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 import PersonIcon from "@material-ui/icons/Person";
 import PermContactCalendarIcon from "@material-ui/icons/PermContactCalendar";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
+import { ListItemText } from "@material-ui/core";
+
 const drawerWidth = 160;
 
 const useStyles = makeStyles((theme) => ({
@@ -42,28 +44,16 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(3),
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
   },
   // necessary for content to be below app bar
-  toolbar:theme.mixins.toolbar,
+  toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
   },
-  content: {
-
- 
-  },
-  menuItem: {
-    color: "black",
-    textDecoration: "none",
-    fontSize: 13,
-    display: "flex",
-    alignItems: "center",
-  },
-  menu:{ padding: "100" }
 }));
 
 function ResponsiveDrawer(props) {
@@ -80,52 +70,51 @@ function ResponsiveDrawer(props) {
   const drawer = (
     <div>
       <div className={classes.toolbar} />
-
       <List>
         {!login ? (
-          <ListItem button key={"Login"}>
-            <ListItemIcon style={{ fontSize: 40 }}>
-              <LockOpenIcon />
-              <Link to="/login" className={classes.menuItem}>
-                {"Login"}
-              </Link>
-            </ListItemIcon>
+          <ListItem button button key={"Login"} component={Link} to="/login">
+            <LockOpenIcon />
+            {"Login"}
           </ListItem>
         ) : (
           ""
         )}
         {login ? (
           <>
-            <ListItem button key={"home"}>
+            <ListItem button key={"home"} component={Link} to="/">
               <ListItemIcon>
-                <HomeIcon style={{ fontSize: 40 }} />
-                <Link to="/" className={classes.menuItem}>
-                  {"Home"}
-                </Link>
+                <HomeIcon />
+                {"Home"}
               </ListItemIcon>
             </ListItem>
-            <ListItem button key={"general-user"}>
+            <ListItem
+              button
+              key={"general-user"}
+              component={Link}
+              to="/general-user"
+            >
               <ListItemIcon>
-                <PersonIcon style={{ fontSize: 40 }} />
-                <Link to="/general-user" className={classes.menuItem}>
-                  {"Usuario General"}
-                </Link>
+                <PersonIcon />
+                {"Usuario General"}
               </ListItemIcon>
             </ListItem>
-            <ListItem button key={"collection-agent"}>
+
+            <ListItem
+              button
+              key={"collection-agent"}
+              component={Link}
+              to="/collection-agent"
+            >
               <ListItemIcon>
-                <PermContactCalendarIcon style={{ fontSize: 40 }} />
-                <Link to="/collection-agent" className={classes.menuItem}>
-                  {"Agente de cobro"}
-                </Link>
+                <PermContactCalendarIcon />
+                {"Agente de cobro"}
               </ListItemIcon>
             </ListItem>
-            <ListItem button key={"admin"}>
+
+            <ListItem button key={"admin"} component={Link} to="/admin">
               <ListItemIcon>
-                <SupervisorAccountIcon style={{ fontSize: 40 }} />
-                <Link to="/admin" className={classes.menuItem}>
-                  {"Admin"}
-                </Link>
+                <SupervisorAccountIcon />
+                {"Admin"}
               </ListItemIcon>
             </ListItem>
           </>
@@ -189,9 +178,8 @@ function ResponsiveDrawer(props) {
           </Drawer>
         </Hidden>
       </nav>
-      <main className={classes.content}>
+      <main>
         <div className={classes.toolbar} />
-
       </main>
     </div>
   );

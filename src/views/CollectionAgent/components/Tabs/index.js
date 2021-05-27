@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     width: "100%",
     backgroundColor: theme.palette.background.default,
+    marginTop: 30,
   },
 }));
 
@@ -66,14 +67,13 @@ export default function ScrollableTabsButtonAuto() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
+      <AppBar position="static">
         <Tabs
           value={value}
           onChange={handleChange}
           variant="scrollable"
           scrollButtons="auto"
-          indicatorColor="primary"
-          textColor="primary"
+          indicatorColor="secondary"
           aria-label="scrollable auto tabs example"
         >
           <Tab label="Pagos " {...a11yProps(0)} />
