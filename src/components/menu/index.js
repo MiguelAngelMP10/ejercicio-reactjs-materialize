@@ -23,7 +23,6 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 import PersonIcon from "@material-ui/icons/Person";
 import PermContactCalendarIcon from "@material-ui/icons/PermContactCalendar";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
-import { ListItemText } from "@material-ui/core";
 
 const drawerWidth = 160;
 
@@ -68,9 +67,9 @@ function ResponsiveDrawer(props) {
   };
 
   const drawer = (
-    <div>
+    <div >
       <div className={classes.toolbar} />
-      <List>
+      <List color="inherit">
         {!login ? (
           <ListItem button button key={"Login"} component={Link} to="/login">
             <LockOpenIcon />

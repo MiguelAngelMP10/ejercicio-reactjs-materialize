@@ -1,6 +1,6 @@
 import SistemaContext from "./index";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function SistemaProvider({ children }) {
@@ -26,6 +26,9 @@ export default function SistemaProvider({ children }) {
 
   const [datosGenerales, setDatosGenerales] = useState({});
 
+  const [colorPrimario, setColorPrimario] = useState("#3f51b5");
+  const [colorSecundario, setColorSecundario] = useState("#f50057");
+  
   const getLogin = async (username, password) => {
     try {
       const params = new FormData();
@@ -349,6 +352,8 @@ export default function SistemaProvider({ children }) {
     axios
       .get("http://localhost:8083/datos-generales/1")
       .then(function (response) {
+       setColorPrimario(response.data.colorPrimario);
+       setColorSecundario(response.data.colorSecundario);
         setDatosGenerales(response.data);
       })
       .catch(function (error) {
@@ -363,7 +368,7 @@ export default function SistemaProvider({ children }) {
         params.append(clave, info[clave]);
       }
     }
-    
+
     axios
       .put("http://localhost:8083/datos-generales/" + id, params)
       .then(function (response) {
@@ -426,9 +431,15 @@ export default function SistemaProvider({ children }) {
         getDatosGenerales,
         updateDatosGenerales,
         datosGenerales,
+
+        colorPrimario,
+        setColorPrimario,
+        colorSecundario,
+        setColorSecundario,
       }}
     >
       {children}
+      
     </SistemaContext.Provider>
   );
 }
