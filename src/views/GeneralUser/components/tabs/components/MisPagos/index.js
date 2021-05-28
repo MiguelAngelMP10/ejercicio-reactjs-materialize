@@ -60,9 +60,7 @@ export default function MisPagos() {
     getPagos().then().catch(null);
   }, [pagado]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -78,6 +76,11 @@ export default function MisPagos() {
   };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
+    { field: "usuario", headerName: "Usuario", width: 250,
+    renderCell: (params) => (
+     `${params.row.usuario[0].nombre} ${params.row.usuario[0].apellidoPaterno} ${params.row.usuario[0].apellidoMaterno}` 
+    ),
+  },
     { field: "concepto", headerName: "Concepto", width: 250 },
     {
       field: "fechaVencimiento",

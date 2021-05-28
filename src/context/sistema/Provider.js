@@ -54,7 +54,7 @@ export default function SistemaProvider({ children }) {
 
   const getPagos = async () => {
     axios
-      .get("http://localhost:8081/pagos")
+      .get("http://localhost:8081/pagos?&expand=usuario")
       .then(function (response) {
         setPagos(response.data);
       })
