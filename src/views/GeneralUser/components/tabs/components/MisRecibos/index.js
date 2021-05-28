@@ -71,13 +71,12 @@ export default function MisRecibos() {
           {"Detalles del Recibo"}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
             <TextField disabled id="standard-id" label="id" value={row.id} fullWidth />
             <TextField
               disabled
               id="standard-descripcionRecibo"
               label="Descripcion Recibo"
-              value={row.descripcionRecibo}
+              defaultValue={row.descripcionRecibo}
               fullWidth
             />
             <TextField
@@ -94,7 +93,7 @@ export default function MisRecibos() {
               value={row.estatus}
               fullWidth
             />
-          </DialogContentText>
+ 
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModalRecibo} color="secondary">
