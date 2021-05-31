@@ -82,7 +82,7 @@ export default function ScrollableTabsButtonAuto() {
 
       <TabPanel value={value} index={0}>
         <Typography variant="h3" component="h5">
-          Registrar agentes
+          Agentes
         </Typography>
         <RegistarAgente></RegistarAgente>
       </TabPanel>

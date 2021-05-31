@@ -28,7 +28,9 @@ export default function SistemaProvider({ children }) {
 
   const [colorPrimario, setColorPrimario] = useState("#3f51b5");
   const [colorSecundario, setColorSecundario] = useState("#f50057");
-  
+
+  const [agentes, setAgentes] = useState([]);
+
   const getLogin = async (username, password) => {
     try {
       const params = new FormData();
@@ -352,8 +354,8 @@ export default function SistemaProvider({ children }) {
     axios
       .get("http://localhost:8083/datos-generales/1")
       .then(function (response) {
-       setColorPrimario(response.data.colorPrimario);
-       setColorSecundario(response.data.colorSecundario);
+        setColorPrimario(response.data.colorPrimario);
+        setColorSecundario(response.data.colorSecundario);
         setDatosGenerales(response.data);
       })
       .catch(function (error) {
@@ -378,6 +380,68 @@ export default function SistemaProvider({ children }) {
         console.log(error);
       });
   };
+
+  // Agentes
+  const getAgentes = async () => {
+    axios
+      .get("http://localhost:8083/agentes")
+      .then(function (response) {
+        setAgentes(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const addAgente= async (info) => {
+    const params = new FormData();
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+
+    axios
+      .post("http://localhost:8083/agentes", params)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const deleteAgente = async (id) => {
+    axios
+      .delete(`http://localhost:8083/agentes/${id}`)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+
+  const updateAgente = async (id, info) => {
+    const params = new URLSearchParams();
+
+    for (let clave in info) {
+      if (info.hasOwnProperty(clave)) {
+        params.append(clave, info[clave]);
+      }
+    }
+
+    axios
+      .put("http://localhost:8083/agentes/" + id, params)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
 
   return (
     <SistemaContext.Provider
@@ -436,10 +500,15 @@ export default function SistemaProvider({ children }) {
         setColorPrimario,
         colorSecundario,
         setColorSecundario,
+
+        getAgentes,
+        agentes,
+        addAgente,
+        deleteAgente,
+        updateAgente
       }}
     >
       {children}
-      
     </SistemaContext.Provider>
   );
 }
